@@ -1,0 +1,124 @@
+{
+    "playableFaction": true,
+    "corvusCompatible": false,
+    "rebelFleetSuffix": "Rebel Fleet",
+    "directoryUseShortName": true,
+    "marketSpawnWeight": 1,
+    "startRelationships": {},
+    "maxRelationships": {},
+    "diplomacyPositiveChance": {},
+    "diplomacyNegativeChance": {},
+    "morality": "good",
+    "alignments": {
+        "hierarchical": -1,
+        "militarist": -0.5,
+        "diplomatic": 0.5,
+        "ideological": 1
+    },
+    "diplomacyTraits": [
+        "pacifist",
+        "helps_allies",
+        "irredentist",
+        "weak-willed"
+    ],
+    "freeMarket": false,
+    "colonyExpeditionChance": 1,
+    "colonyTargetValuator": "exerelin.campaign.colony.IndustrialColonyTargetValuator",
+    "specialForcesNamerClass": "exerelin.campaign.intel.specialforces.namer.CommanderNamer",
+    "startShipsSolo": [
+        [
+            "cerberus_Starting"
+        ]
+    ],
+    "startShipsCombatSmall": [
+        [
+            "mule_Standard",
+            "hound_Starting",
+            "wayfarer_Starting"
+        ]
+    ],
+    "startShipsTradeSmall": [
+        [
+            "buffalo_Standard",
+            "hound_Starting",
+            "wayfarer_Starting"
+        ]
+    ],
+    "startShipsCombatLarge": [
+        [
+            "venture_Balanced",
+            "mule_Standard",
+            "hound_Starting"
+        ]
+    ],
+    "startShipsExplorerLarge": [
+        [
+            "venture_Exploration",
+            "mule_Standard",
+            "hound_Starting"
+        ]
+    ],
+    "startShipsTradeLarge": [
+        [
+            "colossus_Standard",
+            "buffalo_Standard",
+            "hound_Starting"
+        ]
+    ],
+    "startShipsCarrierSmall": [
+        [
+            "condor_Attack",
+            "mule_Standard",
+            "hound_Starting"
+        ]
+    ],
+    "startShipsCarrierLarge": [
+        [
+            "condor_Attack",
+            "mule_Standard",
+            "hound_Starting"
+        ]
+    ],
+    "startShipsSuper": [
+        [
+            "conquest_Elite"
+        ]
+    ],
+    "startSpecialItems": [
+        [
+            [
+                "midline_package",
+                ""
+            ]
+        ]
+    ],
+    "defenceStations": [
+        {
+            "ids": [
+                "orbitalstation_mid",
+                "battlestation_mid",
+                "starfortress_mid"
+            ]
+        }
+    ],
+    "industrySeeds": [
+        {
+            "id": "orbitalworks",
+            "mult": 0.1
+        },
+        {
+            "id": "fuelprod",
+            "mult": 0.1
+        }
+    ],
+    "bonusSeeds": [
+        {
+            "id": "nanoforge_corrupted",
+            "count": 1
+        },
+        {
+            "id": "aiCore_any",
+            "count": 1
+        }
+    ]
+}

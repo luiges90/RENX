@@ -1,0 +1,127 @@
+{
+    "playableFaction": true,
+    "corvusCompatible": false,
+    "rebelFleetSuffix": "Rebel Fleet",
+    "directoryUseShortName": true,
+    "marketSpawnWeight": 1,
+    "startRelationships": {},
+    "maxRelationships": {},
+    "diplomacyPositiveChance": {},
+    "diplomacyNegativeChance": {},
+    "morality": "evil",
+    "alignments": {
+        "corporate": -1,
+        "technocratic": -0.5,
+        "hierarchical": 1,
+        "militarist": 1,
+        "diplomatic": -1,
+        "ideological": -0.5
+    },
+    "diplomacyTraits": [
+        "foreverwar",
+        "temperamental",
+        "paranoid",
+        "envious",
+        "law_and_order"
+    ],
+    "freeMarket": false,
+    "colonyExpeditionChance": 1,
+    "colonyTargetValuator": "exerelin.campaign.colony.IndustrialColonyTargetValuator",
+    "specialForcesNamerClass": "exerelin.campaign.intel.specialforces.namer.CommanderNamer",
+    "startShipsSolo": [
+        [
+            "cerberus_Starting"
+        ]
+    ],
+    "startShipsCombatSmall": [
+        [
+            "mule_Standard",
+            "hound_Starting",
+            "wayfarer_Starting"
+        ]
+    ],
+    "startShipsTradeSmall": [
+        [
+            "buffalo_Standard",
+            "hound_Starting",
+            "wayfarer_Starting"
+        ]
+    ],
+    "startShipsCombatLarge": [
+        [
+            "venture_Balanced",
+            "mule_Standard",
+            "hound_Starting"
+        ]
+    ],
+    "startShipsExplorerLarge": [
+        [
+            "venture_Exploration",
+            "mule_Standard",
+            "hound_Starting"
+        ]
+    ],
+    "startShipsTradeLarge": [
+        [
+            "colossus_Standard",
+            "buffalo_Standard",
+            "hound_Starting"
+        ]
+    ],
+    "startShipsCarrierSmall": [
+        [
+            "condor_Attack",
+            "mule_Standard",
+            "hound_Starting"
+        ]
+    ],
+    "startShipsCarrierLarge": [
+        [
+            "condor_Attack",
+            "mule_Standard",
+            "hound_Starting"
+        ]
+    ],
+    "startShipsSuper": [
+        [
+            "onslaught_Elite"
+        ]
+    ],
+    "startSpecialItems": [
+        [
+            [
+                "low_tech_package",
+                ""
+            ]
+        ]
+    ],
+    "defenceStations": [
+        {
+            "ids": [
+                "orbitalstation",
+                "battlestation",
+                "starfortress"
+            ]
+        }
+    ],
+    "industrySeeds": [
+        {
+            "id": "orbitalworks",
+            "mult": 0.1
+        },
+        {
+            "id": "fuelprod",
+            "mult": 0.1
+        }
+    ],
+    "bonusSeeds": [
+        {
+            "id": "nanoforge_corrupted",
+            "count": 1
+        },
+        {
+            "id": "aiCore_military",
+            "count": 1
+        }
+    ]
+}

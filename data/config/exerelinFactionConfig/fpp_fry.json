@@ -1,0 +1,137 @@
+{
+    "playableFaction": true,
+    "corvusCompatible": false,
+    "difficultyString": "Hard",
+    "rebelFleetSuffix": "Rebel Fleet",
+    "directoryUseShortName": true,
+    "marketSpawnWeight": 1,
+    "pirateFaction": true,
+    "startRelationships": {},
+    "maxRelationships": {},
+    "diplomacyPositiveChance": {},
+    "diplomacyNegativeChance": {},
+    "morality": "evil",
+    "alignments": {
+        "hierarchical": 1,
+        "militarist": 1,
+        "diplomatic": -1,
+        "ideological": -1
+    },
+    "diplomacyTraits": [
+        "predatory",
+        "selfrighteous",
+        "monopolist"
+    ],
+    "freeMarket": false,
+    "raidsFromBases": true,
+    "colonyExpeditionChance": 1,
+    "colonyTargetValuator": "exerelin.campaign.colony.IndustrialColonyTargetValuator",
+    "specialForcesNamerClass": "exerelin.campaign.intel.specialforces.namer.CommanderNamer",
+    "startShipsSolo": [
+        [
+            "cerberus_d_pirates_Shielded"
+        ]
+    ],
+    "startShipsCombatSmall": [
+        [
+            "enforcer_d_pirates_Strike",
+            "buffalo2_FS",
+            "hound_d_pirates_Standard"
+        ]
+    ],
+    "startShipsTradeSmall": [
+        [
+            "mule_d_pirates_Standard",
+            "brawler_Assault",
+            "shepherd_Frontier"
+        ]
+    ],
+    "startShipsCombatLarge": [
+        [
+            "falcon_p_Strike",
+            "enforcer_d_pirates_Strike",
+            "lasher_Standard"
+        ]
+    ],
+    "startShipsExplorerLarge": [
+        [
+            "venture_p_Pirate",
+            "buffalo_pirates_Standard",
+            "cerberus_d_pirates_Standard"
+        ]
+    ],
+    "startShipsCarrierSmall": [
+        [
+            "condor_Attack",
+            "buffalo2_FS",
+            "lasher_Standard"
+        ]
+    ],
+    "startShipsCarrierLarge": [
+        [
+            "colossus3_Pirate",
+            "enforcer_d_pirates_Strike",
+            "hound_d_pirates_Standard"
+        ]
+    ],
+    "startShipsSuper": [
+        [
+            "atlas2_Standard"
+        ]
+    ],
+    "startSpecialItems": [
+        [
+            [
+                "pirate_package",
+                ""
+            ]
+        ]
+    ],
+    "defenceStations": [
+        {
+            "ids": [
+                "orbitalstation",
+                "battlestation",
+                "starfortress"
+            ]
+        },
+        {
+            "ids": [
+                "orbitalstation_mid",
+                "battlestation_mid",
+                "starfortress_mid"
+            ]
+        },
+        {
+            "ids": [
+                "orbitalstation_high",
+                "battlestation_high",
+                "starfortress_high"
+            ]
+        }
+    ],
+    "industrySeeds": [
+        {
+            "id": "orbitalworks",
+            "mult": 0.1
+        },
+        {
+            "id": "fuelprod",
+            "mult": 0.1
+        },
+        {
+            "id": "lightindustry",
+            "mult": 0.1
+        },
+        {
+            "id": "farming",
+            "mult": 1
+        }
+    ],
+    "bonusSeeds": [
+        {
+            "id": "aiCore_station",
+            "count": 1
+        }
+    ]
+}

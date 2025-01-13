@@ -1,3 +1,5 @@
 id,type,text1,text2,text3,text4,notes
-# Types: WEAPON,SHIP,RESOURCE,CUSTOM,ACTION_TOOLTIP,ASTEROID,PLANET,SHIP_SYSTEM,FACTION,TERRAIN
-#astral,SHIP,"Text goes here",,,,
+fpp_lavoie,FACTION,"Empire who believe the sector shall be theirs by their own divine mandate.",,,,
+fpp_massey,FACTION,"Democratic Republic devoted to improve wellbeings of their citizens.",,,,
+fpp_holmes,FACTION,"A little-known faction who appears to have little to do with the sector, and just want to survive at all costs.",,,,
+fpp_fry,FACTION,"A pirate gang lead by Fry, only cares about themselves.",,,,
