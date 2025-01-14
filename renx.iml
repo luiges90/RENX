@@ -44,5 +44,18 @@
         <jarDirectory url="file://$MODULE_DIR$/../LunaLib/jars" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../Nexerelin/jars" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../Nexerelin/jars" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/../Nexerelin/jars" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../Nexerelin/jars" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
 </module>
