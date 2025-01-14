@@ -1,139 +1,98 @@
 {
-    "id": "fpp_lavoie",
-    "color": [
-        138,
-        71,
-        0,
-        255
-    ],
-    "displayName": "Lavoie Empire",
-    "displayNameWithArticle": "the Lavoie Empire",
-    "logo": "graphics/factions/lavoie.png",
-    "crest": "graphics/factions/crest_lavoie.png",
-    "shipNamePrefix": "LS",
+	"id":"renx_faction2",
+	"color":[255, 255, 255],
+
+	"displayName":"RENX Faction",
+
+	"logo": "graphics/factions/renx_flag_FFFFFF.png",
+    "crest": "graphics/factions/renx_crest_FFFFFF.png",
+	"shipNamePrefix":"RENX",
     "shipNameSources": {
-        "GENERAL": 1,
-        "PIRATES": 1,
-        "BRITISH_NAVY": 1,
-        "SPACE": 1,
-        "REVOLUTIONARY": 1,
-        "NORSE": 1,
-        "BEASTS": 1,
-        "ROMAN": 1,
-        "CELTIC": 1,
-        "EGYPTIAN": 1,
-        "AZTEC": 1,
-        "JAPANESE": 1,
-        "GREEK": 1
+      "GENERAL": 1,
+      "PIRATES": 1,
+      "BRITISH_NAVY": 1,
+      "MERCANTILE": 1,
+      "SPACE": 1,
+      "REVOLUTIONARY": 1,
+      "NORSE": 1,
+      "BEASTS": 1,
+      "ROMAN": 1,
+      "CELTIC": 1,
+      "EGYPTIAN": 1,
+      "AZTEC": 1,
+      "JAPANESE": 1,
+      "GREEK": 1
     },
     "names": {
-        "fringe": 1,
-        "old english": 1,
-        "modern": 1,
-        "world": 1,
-        "future": 1,
-        "myth": 1,
-        "pirate": 1
+      "fringe": 1,
+      "old english": 1,
+      "modern": 1,
+      "world": 1,
+      "future": 1,
+      "myth": 1,
+      "pirate": 1
     },
-    "variantOverrides": {},
-    "hullFrequency": {
-        "tags": {},
-        "hulls": {}
-    },
-    "shipsWhenImporting": {
-        "tags": [],
-        "hulls": []
-    },
-    "knownShips": {
-        "tags": [
-            "base_bp",
-            "lowtech_bp"
-        ],
-        "hulls": [
-            "valkyrie",
-            "prometheus",
-            "atlas",
-            "manticore",
-            "eradicator",
-            "onslaught",
-            "retribution",
-            "legion",
-            "invictus",
-        ]
-    },
-    "priorityShips": {
-        "tags": [],
-        "hulls": []
-    },
-    "knownFighters": {
-        "tags": [
-            "base_bp",
-            "lowtech_bp"
-        ],
-        "fighters": [
-            "sarissa_wing",
-            "perdition_wing",
-            "hoplon_wing"
-        ]
-    },
-    "priorityFighters": {
-        "tags": [],
-        "fighters": []
-    },
-    "knownWeapons": {
-        "tags": [
-            "base_bp",
-            "lowtech_bp",
-            "missile_bp"
-        ],
-        "weapons": [
-        ]
-    },
-    "priorityWeapons": {
-        "tags": [],
-        "weapons": []
-    },
-    "knownHullMods": {
-        "tags": [
-            "standard"
-        ],
+
+	"variantOverrides":{
+	},
+
+	"hullFrequency":{
+	},
+
+	"knownShips":{
+		"tags":["base_bp"],
+		"hulls":[],
+	},
+	"priorityShips":{
+		"tags":[],
+		"hulls":[],
+	},
+	"knownFighters":{
+        "tags":["base_bp"],
+		"fighters":[],
+	},
+	"priorityFighters":{
+		"tags":[],
+		"fighters":[],
+	},
+	"knownWeapons":{
+		"tags":["base_bp"],
+		"weapons":[],
+	},
+	"priorityWeapons":{
+		"tags":[],
+		"weapons":[],
+	},
+	"knownHullMods": {
+        "tags": ["standard"],
         "hullMods": []
     },
-    "weaponSellFrequency": {},
-    "fighterSellFrequency": {},
-    "hullmodSellFrequency": {},
-    "factionDoctrine": {
-        "warships": 4,
-        "carriers": 3,
-        "phaseShips": 0,
-        "officerQuality": 2,
-        "shipQuality": 2,
-        "numShips": 3,
-        "shipSize": 3,
-        "aggression": 3,
-        "combatFreighterProbability": 0.6,
-        "combatFreighterCombatUseFraction": 0.6,
-        "combatFreighterCombatUseFractionWhenPriority": 0.6,
-        "autofitRandomizeProbability": 0.3,
-        "officerSkillsShuffleProbability": 1,
-        "officerSkills": [
-            "target_analysis",
-            "ordnance_expert",
-            "polarized_armor"
-        ],
-        "commanderSkillsShuffleProbability": 1,
-        "commanderSkills": [
-            "tactical_drills",
-            "crew_training"
-        ]
-    },
-    "illegalCommodities": [
-        "drugs",
-        "organs",
-        "ai_cores",
-        "hand_weapons"
-    ],
-    "portraits": {
+	"factionDoctrine":{
+		"warships":5,
+		"carriers":1,
+		"phaseShips":1,
+
+		"officerQuality":1,
+		"shipQuality":1,
+		"numShips":5,
+
+		"shipSize":3,
+
+		"aggression":5,
+
+		"combatFreighterProbability":1,
+		"combatFreighterCombatUseFraction":1,
+		"combatFreighterCombatUseFractionWhenPriority":1,
+		"autofitRandomizeProbability":0.75,
+
+        "officerSkillsShuffleProbability": 0,
+        "officerSkills": [],
+		"commanderSkillsShuffleProbability":0,
+		"commanderSkills":[],
+	},
+	"illegalCommodities":[
+	],
+	"portraits": {
         "standard_male": [
             "graphics/portraits/portrait12.png",
             "graphics/portraits/portrait13.png",
@@ -293,38 +252,46 @@
             }
         }
     },
-    "voices": {
-        "LOW": {
-            "faithful": 5,
-            "pather": 5,
-            "soldier": 10,
-            "spacer": 10,
-        },
-        "MEDIUM": {
-            "faithful": 5,
-            "official": 5,
-            "soldier": 5,
-            "spacer": 5,
-        },
-        "HIGH": {
-            "aristo": 10,
-            "faithful": 5,
-            "official": 10,
-        }
-    },
-    "custom": {
-        "offersCommissions": true,
-        "engagesInHostilities": true,
-        "buysAICores": true,
-        "AICoreValueMult": 1,
-        "AICoreRepMult": 2,
-        "buysSurveyData": true,
-        "hostilityImpactOnGrowth": true,
-        "punitiveExpeditionData": {
-            "vsCompetitors": true,
-            "vsFreePort": true,
-            "canBombard": true,
-            "territorial": true
-        }
-    }
+	"voices":{
+      "LOW": {
+        "business": 5,
+        "faithful": 5,
+        "official": 5,
+        "path": 5,
+        "soldier": 5,
+        "spacer": 5,
+        "scientist": 5
+      },
+      "MEDIUM": {
+        "business": 5,
+        "faithful": 5,
+        "official": 5,
+        "path": 5,
+        "soldier": 5,
+        "spacer": 5,
+        "scientist": 5
+      },
+      "HIGH": {
+        "aristo": 5,
+        "business": 5,
+        "faithful": 5,
+        "official": 5,
+        "scientist": 5
+      }
+	},
+	"custom":{
+      "offersCommissions": true,
+      "engagesInHostilities": true,
+      "buysAICores": true,
+      "AICoreValueMult": 2,
+      "AICoreRepMult": 1,
+      "buysSurveyData": true,
+      "hostilityImpactOnGrowth": true,
+      "punitiveExpeditionData": {
+        "vsCompetitors": false,
+        "vsFreePort": false,
+        "canBombard": true,
+        "territorial": true
+      }
+	}
 }

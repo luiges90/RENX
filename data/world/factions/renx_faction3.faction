@@ -1,0 +1,297 @@
+{
+	"id":"renx_faction3",
+	"color":[255, 255, 255],
+
+	"displayName":"RENX Faction",
+
+	"logo": "graphics/factions/renx_flag_FFFFFF.png",
+    "crest": "graphics/factions/renx_crest_FFFFFF.png",
+	"shipNamePrefix":"RENX",
+    "shipNameSources": {
+      "GENERAL": 1,
+      "PIRATES": 1,
+      "BRITISH_NAVY": 1,
+      "MERCANTILE": 1,
+      "SPACE": 1,
+      "REVOLUTIONARY": 1,
+      "NORSE": 1,
+      "BEASTS": 1,
+      "ROMAN": 1,
+      "CELTIC": 1,
+      "EGYPTIAN": 1,
+      "AZTEC": 1,
+      "JAPANESE": 1,
+      "GREEK": 1
+    },
+    "names": {
+      "fringe": 1,
+      "old english": 1,
+      "modern": 1,
+      "world": 1,
+      "future": 1,
+      "myth": 1,
+      "pirate": 1
+    },
+
+	"variantOverrides":{
+	},
+
+	"hullFrequency":{
+	},
+
+	"knownShips":{
+		"tags":["base_bp"],
+		"hulls":[],
+	},
+	"priorityShips":{
+		"tags":[],
+		"hulls":[],
+	},
+	"knownFighters":{
+        "tags":["base_bp"],
+		"fighters":[],
+	},
+	"priorityFighters":{
+		"tags":[],
+		"fighters":[],
+	},
+	"knownWeapons":{
+		"tags":["base_bp"],
+		"weapons":[],
+	},
+	"priorityWeapons":{
+		"tags":[],
+		"weapons":[],
+	},
+	"knownHullMods": {
+        "tags": ["standard"],
+        "hullMods": []
+    },
+	"factionDoctrine":{
+		"warships":5,
+		"carriers":1,
+		"phaseShips":1,
+
+		"officerQuality":1,
+		"shipQuality":1,
+		"numShips":5,
+
+		"shipSize":3,
+
+		"aggression":5,
+
+		"combatFreighterProbability":1,
+		"combatFreighterCombatUseFraction":1,
+		"combatFreighterCombatUseFractionWhenPriority":1,
+		"autofitRandomizeProbability":0.75,
+
+        "officerSkillsShuffleProbability": 0,
+        "officerSkills": [],
+		"commanderSkillsShuffleProbability":0,
+		"commanderSkills":[],
+	},
+	"illegalCommodities":[
+	],
+	"portraits": {
+        "standard_male": [
+            "graphics/portraits/portrait12.png",
+            "graphics/portraits/portrait13.png",
+            "graphics/portraits/portrait15.png",
+            "graphics/portraits/portrait17.png",
+            "graphics/portraits/portrait18.png",
+            "graphics/portraits/portrait20.png",
+            "graphics/portraits/portrait23.png",
+            "graphics/portraits/portrait25.png",
+            "graphics/portraits/portrait26.png",
+            "graphics/portraits/portrait30.png",
+            "graphics/portraits/portrait31.png",
+            "graphics/portraits/portrait33.png",
+            "graphics/portraits/portrait35.png",
+            "graphics/portraits/portrait36.png",
+            "graphics/portraits/portrait38.png",
+            "graphics/portraits/portrait40.png",
+            "graphics/portraits/portrait43.png",
+            "graphics/portraits/portrait44.png",
+            "graphics/portraits/portrait47.png",
+            "graphics/portraits/portrait48.png",
+            "graphics/portraits/portrait_mercenary01.png",
+            "graphics/portraits/portrait_mercenary03.png",
+            "graphics/portraits/portrait_mercenary04.png",
+            "graphics/portraits/portrait_mercenary06.png",
+            "graphics/portraits/portrait_mercenary08.png",
+            "graphics/portraits/portrait_pirate02.png",
+            "graphics/portraits/portrait_pirate03.png",
+            "graphics/portraits/portrait_pirate07.png",
+            "graphics/portraits/portrait_pirate10.png",
+            "graphics/portraits/portrait_pirate11.png",
+            "graphics/portraits/portrait_pirate12.png",
+            "graphics/portraits/portrait_pirate13.png",
+            "graphics/portraits/portrait_pirate14.png",
+            "graphics/portraits/characters/old_spacer02.png",
+            "graphics/portraits/portrait_hegemony01.png",
+            "graphics/portraits/portrait_hegemony02.png",
+            "graphics/portraits/portrait_hegemony05.png",
+            "graphics/portraits/portrait_hegemony07.png",
+            "graphics/portraits/portrait_hegemony09.png",
+            "graphics/portraits/portrait_hegemony12.png",
+            "graphics/portraits/portrait_hegemony13.png",
+            "graphics/portraits/portrait_hegemony15.png",
+            "graphics/portraits/portrait_corporate01.png",
+            "graphics/portraits/portrait_corporate03.png",
+            "graphics/portraits/portrait_corporate05.png",
+            "graphics/portraits/portrait_corporate06.png",
+            "graphics/portraits/portrait_corporate08.png",
+            "graphics/portraits/portrait_corporate10.png",
+            "graphics/portraits/portrait_luddic00.png",
+            "graphics/portraits/portrait_luddic02.png",
+            "graphics/portraits/portrait_luddic04.png",
+            "graphics/portraits/portrait_luddic05.png",
+            "graphics/portraits/portrait_luddic06.png",
+            "graphics/portraits/portrait_luddic09.png",
+            "graphics/portraits/portrait_luddic12.png",
+            "graphics/portraits/portrait_league01.png",
+            "graphics/portraits/portrait_league02.png",
+            "graphics/portraits/portrait_league03.png",
+            "graphics/portraits/portrait_league06.png",
+            "graphics/portraits/portrait_league07.png",
+            "graphics/portraits/portrait_league09.png",
+            "graphics/portraits/portrait_diktat01.png",
+            "graphics/portraits/portrait_diktat03.png",
+            "graphics/portraits/portrait_diktat04.png",
+            "graphics/portraits/portrait_diktat07.png",
+            "graphics/portraits/portrait_diktat10.png",
+            "graphics/portraits/portrait_diktat12.png",
+            "graphics/portraits/portrait_diktat14.png",
+            "graphics/portraits/portrait_diktat16.png"
+        ],
+        "standard_female": [
+            "graphics/portraits/portrait14.png",
+            "graphics/portraits/portrait16.png",
+            "graphics/portraits/portrait21.png",
+            "graphics/portraits/portrait22.png",
+            "graphics/portraits/portrait24.png",
+            "graphics/portraits/portrait27.png",
+            "graphics/portraits/portrait28.png",
+            "graphics/portraits/portrait29.png",
+            "graphics/portraits/portrait32.png",
+            "graphics/portraits/portrait34.png",
+            "graphics/portraits/portrait37.png",
+            "graphics/portraits/portrait39.png",
+            "graphics/portraits/portrait41.png",
+            "graphics/portraits/portrait42.png",
+            "graphics/portraits/portrait45.png",
+            "graphics/portraits/portrait46.png",
+            "graphics/portraits/portrait_mercenary02.png",
+            "graphics/portraits/portrait_mercenary05.png",
+            "graphics/portraits/portrait_mercenary07.png",
+            "graphics/portraits/portrait_pirate01.png",
+            "graphics/portraits/portrait_pirate04.png",
+            "graphics/portraits/portrait_pirate05.png",
+            "graphics/portraits/portrait_pirate06.png",
+            "graphics/portraits/portrait_pirate08.png",
+            "graphics/portraits/portrait_pirate09.png",
+            "graphics/portraits/characters/old_spacer01.png",
+            "graphics/portraits/portrait_hegemony03.png",
+            "graphics/portraits/portrait_hegemony04.png",
+            "graphics/portraits/portrait_hegemony06.png",
+            "graphics/portraits/portrait_hegemony08.png",
+            "graphics/portraits/portrait_hegemony10.png",
+            "graphics/portraits/portrait_hegemony11.png",
+            "graphics/portraits/portrait_hegemony14.png",
+            "graphics/portraits/portrait_hegemony16.png",
+            "graphics/portraits/portrait_hegemony17.png",
+            "graphics/portraits/portrait_corporate02.png",
+            "graphics/portraits/portrait_corporate04.png",
+            "graphics/portraits/portrait_corporate07.png",
+            "graphics/portraits/portrait_corporate09.png",
+            "graphics/portraits/portrait_league00.png",
+            "graphics/portraits/portrait_league04.png",
+            "graphics/portraits/portrait_league05.png",
+            "graphics/portraits/portrait_league08.png",
+            "graphics/portraits/portrait_league10.png",
+            "graphics/portraits/portrait_luddic01.png",
+            "graphics/portraits/portrait_luddic03.png",
+            "graphics/portraits/portrait_luddic07.png",
+            "graphics/portraits/portrait_luddic08.png",
+            "graphics/portraits/portrait_luddic10.png",
+            "graphics/portraits/portrait_luddic11.png",
+            "graphics/portraits/portrait_diktat02.png",
+            "graphics/portraits/portrait_diktat05.png",
+            "graphics/portraits/portrait_diktat06.png",
+            "graphics/portraits/portrait_diktat08.png",
+            "graphics/portraits/portrait_diktat09.png",
+            "graphics/portraits/portrait_diktat11.png",
+            "graphics/portraits/portrait_diktat13.png",
+            "graphics/portraits/portrait_diktat15.png"
+        ]
+    },
+    "ranks": {
+        "ranks": {
+            "spaceAdmiral": {
+                "name": "Admiral"
+            },
+            "spaceCommander": {
+                "name": "Commander"
+            },
+            "factionLeader": {
+                "name": "Leader"
+            }
+        },
+        "posts": {
+            "factionLeader": {
+                "name": "Leader"
+            },
+            "patrolCommander": {
+                "name": "Patrol Commander"
+            },
+            "fleetCommander": {
+                "name": "Fleet Commander"
+            },
+            "baseCommander": {
+                "name": "Base Commander"
+            }
+        }
+    },
+	"voices":{
+      "LOW": {
+        "business": 5,
+        "faithful": 5,
+        "official": 5,
+        "path": 5,
+        "soldier": 5,
+        "spacer": 5,
+        "scientist": 5
+      },
+      "MEDIUM": {
+        "business": 5,
+        "faithful": 5,
+        "official": 5,
+        "path": 5,
+        "soldier": 5,
+        "spacer": 5,
+        "scientist": 5
+      },
+      "HIGH": {
+        "aristo": 5,
+        "business": 5,
+        "faithful": 5,
+        "official": 5,
+        "scientist": 5
+      }
+	},
+	"custom":{
+      "offersCommissions": true,
+      "engagesInHostilities": true,
+      "buysAICores": true,
+      "AICoreValueMult": 2,
+      "AICoreRepMult": 1,
+      "buysSurveyData": true,
+      "hostilityImpactOnGrowth": true,
+      "punitiveExpeditionData": {
+        "vsCompetitors": false,
+        "vsFreePort": false,
+        "canBombard": true,
+        "territorial": true
+      }
+	}
+}

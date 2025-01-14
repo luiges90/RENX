@@ -1,115 +1,97 @@
 {
-	"id":"fpp_fry",
-	"color":[128,0,0,255],
+	"id":"renx_faction1",
+	"color":[255, 255, 255],
 
-	"displayName":"Fry Gang",
-	"displayNameWithArticle":"the Fry Gang",
+	"displayName":"RENX Faction",
 
-	"logo": "graphics/factions/fry.png",
-    "crest": "graphics/factions/crest_fry.png",
-	"shipNamePrefix":"FGG", 
-	"shipNameSources":{
-		"PIRATES":1,
-		"SPACE":1,
-		"GENERAL":1,
-	},
-	"names":{
-		"fringe":1,
-		"pirate":1,
-	},
+	"logo": "graphics/factions/renx_flag_FFFFFF.png",
+    "crest": "graphics/factions/renx_crest_FFFFFF.png",
+	"shipNamePrefix":"RENX",
+    "shipNameSources": {
+      "GENERAL": 1,
+      "PIRATES": 1,
+      "BRITISH_NAVY": 1,
+      "MERCANTILE": 1,
+      "SPACE": 1,
+      "REVOLUTIONARY": 1,
+      "NORSE": 1,
+      "BEASTS": 1,
+      "ROMAN": 1,
+      "CELTIC": 1,
+      "EGYPTIAN": 1,
+      "AZTEC": 1,
+      "JAPANESE": 1,
+      "GREEK": 1
+    },
+    "names": {
+      "fringe": 1,
+      "old english": 1,
+      "modern": 1,
+      "world": 1,
+      "future": 1,
+      "myth": 1,
+      "pirate": 1
+    },
 
 	"variantOverrides":{
 	},
-	
+
 	"hullFrequency":{
 	},
 
 	"knownShips":{
-		"tags":["base_bp", "pirate_bp", "pirates"],
-		"hulls":[
-			"vanguard_pirates",
-			"manticore_pirates",
-			"falcon_p",
-			"eradicator_pirates",
-			"atlas2",
-		],
+		"tags":["base_bp"],
+		"hulls":[],
 	},
 	"priorityShips":{
 		"tags":[],
-		"hulls":[
-		],
+		"hulls":[],
 	},
 	"knownFighters":{
-		"tags":["pirates"],
-		"fighters":[
-			"broadsword_wing",
-			"talon_wing",
-			"piranha_wing",
-		],
+        "tags":["base_bp"],
+		"fighters":[],
 	},
 	"priorityFighters":{
 		"tags":[],
-		"fighters":[
-		],
+		"fighters":[],
 	},
 	"knownWeapons":{
-		"tags":["base_bp", "lowtech_bp", "midline_bp", "missile_bp", "hightech_bp", "pirates"],
-		"weapons":[
-			"hurricane",
-			"squall",
-			"locust",
-		],
+		"tags":["base_bp"],
+		"weapons":[],
 	},
 	"priorityWeapons":{
 		"tags":[],
-		"weapons":[
-		],
+		"weapons":[],
 	},
 	"knownHullMods": {
-        "tags": [
-            "standard"
-        ],
+        "tags": ["standard"],
         "hullMods": []
     },
 	"factionDoctrine":{
 		"warships":5,
 		"carriers":1,
 		"phaseShips":1,
-		
+
 		"officerQuality":1,
 		"shipQuality":1,
 		"numShips":5,
-		
+
 		"shipSize":3,
-		
+
 		"aggression":5,
-		
-		"combatFreighterProbability":1,     				
-		"combatFreighterCombatUseFraction":1,  				
-		"combatFreighterCombatUseFractionWhenPriority":1,   
+
+		"combatFreighterProbability":1,
+		"combatFreighterCombatUseFraction":1,
+		"combatFreighterCombatUseFractionWhenPriority":1,
 		"autofitRandomizeProbability":0.75,
 
-        "officerSkillsShuffleProbability": 0.5,
-        "officerSkills": [
-            "target_analysis",
-        ],
+        "officerSkillsShuffleProbability": 0,
+        "officerSkills": [],
 		"commanderSkillsShuffleProbability":0,
-		"commanderSkills":[
-			"support_doctrine",
-            "derelict_contingent"
-		],
+		"commanderSkills":[],
 	},
 	"illegalCommodities":[
 	],
-	"music":{
-		"theme":"music_pirates_market_neutral",
-		"market_neutral":"music_pirates_market_neutral",
-		"market_hostile":"music_pirates_market_hostile",
-		"market_friendly":"music_pirates_market_friendly",
-		"encounter_neutral":"music_pirates_encounter_neutral",
-		"encounter_hostile":"music_pirates_encounter_hostile",
-		"encounter_friendly":"music_pirates_encounter_friendly",
-	},
 	"portraits": {
         "standard_male": [
             "graphics/portraits/portrait12.png",
@@ -271,37 +253,45 @@
         }
     },
 	"voices":{
-		"LOW":{
-			"soldier":3,
-			"spacer":5,
-            "villain":10,
-		},
-		"MEDIUM":{
-			"soldier":3,
-			"spacer":5,
-            "villain":10,
-		},
-		"HIGH":{
-			"soldier":3,
-			"spacer":5,
-			"villain":10,
-		},
-	},	
+      "LOW": {
+        "business": 5,
+        "faithful": 5,
+        "official": 5,
+        "path": 5,
+        "soldier": 5,
+        "spacer": 5,
+        "scientist": 5
+      },
+      "MEDIUM": {
+        "business": 5,
+        "faithful": 5,
+        "official": 5,
+        "path": 5,
+        "soldier": 5,
+        "spacer": 5,
+        "scientist": 5
+      },
+      "HIGH": {
+        "aristo": 5,
+        "business": 5,
+        "faithful": 5,
+        "official": 5,
+        "scientist": 5
+      }
+	},
 	"custom":{
-        "offersCommissions": true,
-        "engagesInHostilities": true,
-		"decentralized":false,
-		"engageWhenEvenStrength":true,
-		"exemptFromFoodShortages":true,
-		"postsNoBounties":true,
-        "buysSurveyData": true,
-		"pirateBehavior":true,
-		"fightToTheLast":true,
-		"punitiveExpeditionData":{
-			"vsCompetitors":true,
-			"vsFreePort":false,
-			"canBombard":true,
-			"territorial":true,
-		},
+      "offersCommissions": true,
+      "engagesInHostilities": true,
+      "buysAICores": true,
+      "AICoreValueMult": 2,
+      "AICoreRepMult": 1,
+      "buysSurveyData": true,
+      "hostilityImpactOnGrowth": true,
+      "punitiveExpeditionData": {
+        "vsCompetitors": false,
+        "vsFreePort": false,
+        "canBombard": true,
+        "territorial": true
+      }
 	}
 }

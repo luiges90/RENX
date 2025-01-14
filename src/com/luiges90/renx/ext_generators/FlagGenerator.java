@@ -28,7 +28,7 @@ public class FlagGenerator {
         g.dispose();
 
         // Prepare file name
-        String filename = String.format("renx_%s_%02X%02X%02X.png", filePrefix, red, green, blue);
+        String filename = String.format("graphics/factions/renx_%s_%02X%02X%02X.png", filePrefix, red, green, blue);
         File file = new File(filename);
 
         // Save the image to the file
