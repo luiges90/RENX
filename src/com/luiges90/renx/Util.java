@@ -5,6 +5,7 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -36,6 +37,13 @@ public class Util {
 
     public static <T> T from(Random random, T[] array) {
         return array[random.nextInt(array.length)];
+    }
+
+    public static long byteArrayToLong(byte[] bytes) {
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        buffer.put(bytes, 0, Math.min(8, bytes.length));
+        buffer.flip(); // need to flip the buffer before reading
+        return buffer.getLong();
     }
 
     public static List<String> getAllBaseHullsWithTag(String tag) {

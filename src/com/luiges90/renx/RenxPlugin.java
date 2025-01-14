@@ -3,6 +3,7 @@ package com.luiges90.renx;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionDoctrineAPI;
 import com.fs.starfarer.api.campaign.FactionSpecAPI;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.NexConfig;
@@ -17,10 +18,10 @@ public class RenxPlugin extends BaseModPlugin {
     public static final int[] COLOR_VALUES = {0, 85, 170, 255};
 
     @Override
-    public void onApplicationLoad() throws Exception {
-        super.onApplicationLoad();
+    public void onNewGame() {
+        super.onNewGame();
 
-        Random rng = new Random(SEED);
+        Random rng = new Random(Util.byteArrayToLong(Global.getSector().getSeedString().getBytes()));
 
         int index = 0;
         while (true) {
@@ -28,9 +29,9 @@ public class RenxPlugin extends BaseModPlugin {
             if (spec == null) break;
 
             int[] color = new int[] {
-                COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
-                COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
-                COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)]
+                    COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
+                    COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
+                    COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)]
             };
             if (color[0] + color[1] + color[2] <= 100) continue;
 
@@ -43,6 +44,21 @@ public class RenxPlugin extends BaseModPlugin {
             addWeapons(faction, hullTag);
 
             setDoctrine(faction, rng, hullTag);
+
+            index++;
+        }
+    }
+
+    @Override
+    public void onApplicationLoad() throws Exception {
+        super.onApplicationLoad();
+
+        Random rng = new Random(SEED);
+
+        int index = 0;
+        while (true) {
+            FactionSpecAPI spec = Global.getSettings().getFactionSpec("renx_faction" + index);
+            if (spec == null) break;
 
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
@@ -60,7 +76,7 @@ public class RenxPlugin extends BaseModPlugin {
     }
 
     private static void setDoctrine(FactionAPI faction, Random rng, String hullTag) {
-        com.fs.starfarer.api.campaign.FactionDoctrineAPI doctrine = faction.getDoctrine();
+        FactionDoctrineAPI doctrine = faction.getDoctrine();
         doctrine.setAggression(rng.nextInt(5) + 1);
         doctrine.setNumShips(rng.nextInt(5) + 1);
         doctrine.setAutofitRandomizeProbability(rng.nextFloat());
