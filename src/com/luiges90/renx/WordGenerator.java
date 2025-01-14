@@ -31,7 +31,7 @@ public class WordGenerator {
     {
         String prefix1, vowel1, suffix1;
 
-        var noPrefix1 = random.nextFloat() < 0.2f;
+        boolean noPrefix1 = random.nextFloat() < 0.2f;
         if (!noPrefix1)
         {
             prefix1 = Util.from(random, ConsonantPrefix);
@@ -54,7 +54,7 @@ public class WordGenerator {
         String prefix2 = "", vowel2 = "", suffix2 = "";
         if (random.nextFloat() < 0.5f)
         {
-            var noPrefix2 = random.nextFloat() < 0.2f;
+            boolean noPrefix2 = random.nextFloat() < 0.2f;
             if (!noPrefix2)
             {
                 prefix2 = Util.from(random, ConsonantPrefix);

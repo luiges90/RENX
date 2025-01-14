@@ -1,6 +1,9 @@
 package com.luiges90.renx;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
+import com.fs.starfarer.api.loading.FighterWingSpecAPI;
+import com.fs.starfarer.api.loading.WeaponSpecAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +39,9 @@ public class Util {
     }
 
     public static List<String> getAllBaseHullsWithTag(String tag) {
-        var ships = Global.getSettings().getAllShipHullSpecs();
-        var result = new ArrayList<String>();
-        for (var ship : ships) {
+        List<ShipHullSpecAPI> ships = Global.getSettings().getAllShipHullSpecs();
+        ArrayList<String> result = new ArrayList<String>();
+        for (ShipHullSpecAPI ship : ships) {
             if (ship.hasTag(tag)) {
                 result.add(ship.getBaseHullId());
             }
@@ -47,9 +50,9 @@ public class Util {
     }
 
     public static List<String> getAllFightersWithTag(String tag) {
-        var fighters = Global.getSettings().getAllFighterWingSpecs();
-        var result = new ArrayList<String>();
-        for (var fighter : fighters) {
+        List<FighterWingSpecAPI> fighters = Global.getSettings().getAllFighterWingSpecs();
+        ArrayList<String> result = new ArrayList<String>();
+        for (FighterWingSpecAPI fighter : fighters) {
             if (fighter.hasTag(tag)) {
                 result.add(fighter.getId());
             }
@@ -58,9 +61,9 @@ public class Util {
     }
 
     public static List<String> getAllWeaponsWithTag(String tag) {
-        var weapons = Global.getSettings().getAllWeaponSpecs();
-        var result = new ArrayList<String>();
-        for (var weapon : weapons) {
+        List<WeaponSpecAPI> weapons = Global.getSettings().getAllWeaponSpecs();
+        ArrayList<String> result = new ArrayList<String>();
+        for (WeaponSpecAPI weapon : weapons) {
             if (weapon.hasTag(tag)) {
                 result.add(weapon.getWeaponId());
             }

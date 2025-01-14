@@ -20,12 +20,6 @@
   "colonyExpeditionChance": 1,
   "colonyTargetValuator": "exerelin.campaign.colony.IndustrialColonyTargetValuator",
   "specialForcesNamerClass": "exerelin.campaign.intel.specialforces.namer.PlanetNamer",
-  "startSpecialItems": [
-    [
-      [
-      ]
-    ]
-  ],
   "defenceStations": [
     {
       "ids": [

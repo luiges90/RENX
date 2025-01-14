@@ -9,6 +9,7 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Random;
 
 public class RenxPlugin extends BaseModPlugin {
@@ -26,7 +27,7 @@ public class RenxPlugin extends BaseModPlugin {
             FactionSpecAPI spec = Global.getSettings().getFactionSpec("renx_faction" + index);
             if (spec == null) break;
 
-            var color = new int[] {
+            int[] color = new int[] {
                 COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
                 COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
                 COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)]
@@ -37,7 +38,7 @@ public class RenxPlugin extends BaseModPlugin {
 
             FactionAPI faction = Global.getSector().getFaction("renx_faction" + index);
 
-            var hullTag = addHulls(rng, faction);
+            String hullTag = addHulls(rng, faction);
             addFighters(hullTag, faction);
             addWeapons(faction, hullTag);
 
@@ -46,7 +47,7 @@ public class RenxPlugin extends BaseModPlugin {
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
             config.pirateFaction = rng.nextFloat() < 0.2f;
-            var alignments = config.getAlignments();
+            java.util.Map<Alliance.Alignment, com.fs.starfarer.api.combat.MutableStat> alignments = config.getAlignments();
             alignments.get(Alliance.Alignment.CORPORATE).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
             alignments.get(Alliance.Alignment.TECHNOCRATIC).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
             alignments.get(Alliance.Alignment.HIERARCHICAL).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
@@ -59,7 +60,7 @@ public class RenxPlugin extends BaseModPlugin {
     }
 
     private static void setDoctrine(FactionAPI faction, Random rng, String hullTag) {
-        var doctrine = faction.getDoctrine();
+        com.fs.starfarer.api.campaign.FactionDoctrineAPI doctrine = faction.getDoctrine();
         doctrine.setAggression(rng.nextInt(5) + 1);
         doctrine.setNumShips(rng.nextInt(5) + 1);
         doctrine.setAutofitRandomizeProbability(rng.nextFloat());
@@ -86,21 +87,21 @@ public class RenxPlugin extends BaseModPlugin {
     }
 
     private static void addWeapons(FactionAPI faction, String hullTag) {
-        var baseWeapons = Util.getAllWeaponsWithTag("base_bp");
-        for (var baseWeapon : baseWeapons) {
+        List<String> baseWeapons = Util.getAllWeaponsWithTag("base_bp");
+        for (String baseWeapon : baseWeapons) {
             faction.addKnownWeapon(baseWeapon, true);
         }
-        var baseTechWeapons = Util.getAllWeaponsWithTag(hullTag);
-        for (var baseWeapon : baseTechWeapons) {
+        List<String> baseTechWeapons = Util.getAllWeaponsWithTag(hullTag);
+        for (String baseWeapon : baseTechWeapons) {
             faction.addKnownWeapon(baseWeapon, true);
         }
-        var missileWeapons = Util.getAllWeaponsWithTag("missile_bp");
-        for (var missileWeapon : missileWeapons) {
+        List<String> missileWeapons = Util.getAllWeaponsWithTag("missile_bp");
+        for (String missileWeapon : missileWeapons) {
             faction.addKnownWeapon(missileWeapon, true);
         }
         if (hullTag.equals("pirates")) {
-            var pirateWeapons = Util.getAllWeaponsWithTag("pirate_bp");
-            for (var pirateWeapon : pirateWeapons) {
+            List<String> pirateWeapons = Util.getAllWeaponsWithTag("pirate_bp");
+            for (String pirateWeapon : pirateWeapons) {
                 faction.addKnownWeapon(pirateWeapon, true);
             }
         }
@@ -301,14 +302,14 @@ public class RenxPlugin extends BaseModPlugin {
                 };
                 break;
         }
-        for (var weapon : weaponList) {
+        for (String weapon : weaponList) {
             faction.addKnownWeapon(weapon, true);
         }
     }
 
     private static void addFighters(String hullTag, FactionAPI faction) {
-        var baseFighters = Util.getAllFightersWithTag(hullTag);
-        for (var baseFighter : baseFighters) {
+        List<String> baseFighters = Util.getAllFightersWithTag(hullTag);
+        for (String baseFighter : baseFighters) {
             faction.addKnownFighter(baseFighter, true);
         }
         String[] fighterList;
@@ -349,20 +350,20 @@ public class RenxPlugin extends BaseModPlugin {
                 fighterList = new String[]{};
                 break;
         }
-        for (var fighter : fighterList) {
+        for (String fighter : fighterList) {
             faction.addKnownFighter(fighter, true);
         }
     }
 
     private static String addHulls(Random rng, FactionAPI faction) {
-        var hullTags = new String[]{"lowtech_bp", "midline_bp", "hightech_bp", "pirate_bp"};
-        var hullTag = Util.from(rng, hullTags);
-        var baseHulls = Util.getAllBaseHullsWithTag("base_bp");
-        for (var baseHull : baseHulls) {
+        String[] hullTags = new String[]{"lowtech_bp", "midline_bp", "hightech_bp", "pirate_bp"};
+        String hullTag = Util.from(rng, hullTags);
+        List<String> baseHulls = Util.getAllBaseHullsWithTag("base_bp");
+        for (String baseHull : baseHulls) {
             faction.addKnownShip(baseHull, true);
         }
-        var baseTechHulls = Util.getAllBaseHullsWithTag(hullTag);
-        for (var baseHull : baseTechHulls) {
+        List<String> baseTechHulls = Util.getAllBaseHullsWithTag(hullTag);
+        for (String baseHull : baseTechHulls) {
             faction.addKnownShip(baseHull, true);
         }
         faction.addKnownShip("valkyrie", true);
@@ -419,7 +420,7 @@ public class RenxPlugin extends BaseModPlugin {
                 hullList = new String[]{};
                 break;
         }
-        for (var hull : hullList) {
+        for (String hull : hullList) {
             faction.addKnownShip(hull, true);
         }
         return hullTag;
