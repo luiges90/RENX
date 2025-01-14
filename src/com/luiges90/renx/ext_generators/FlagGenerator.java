@@ -8,13 +8,15 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class FlagGenerator {
+    public static final int[] COLOR_VALUES = {0, 85, 170, 255};
+
     public static void main(String[] args) {
-        for (int red = 0; red <= 255; red += 85) {
-            for (int green = 0; green <= 255; green += 85) {
-                for (int blue = 0; blue <= 255; blue += 85) {
-                    if (red + green + blue <= 100) continue;
-                    generateImage(red, green, blue, 410, 256, "flag");
-                    generateImage(red, green, blue, 256, 256, "crest");
+        for (int i : COLOR_VALUES) {
+            for (int j : COLOR_VALUES) {
+                for (int k : COLOR_VALUES) {
+                    if (i + COLOR_VALUES[j] + COLOR_VALUES[k] <= 100) continue;
+                    generateImage(i, COLOR_VALUES[j], COLOR_VALUES[k], 410, 256, "flag");
+                    generateImage(i, COLOR_VALUES[j], COLOR_VALUES[k], 256, 256, "crest");
                 }
             }
         }

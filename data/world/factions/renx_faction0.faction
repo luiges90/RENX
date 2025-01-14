@@ -1,8 +1,9 @@
 {
 	"id":"renx_faction0",
-	"color":[255, 255, 255],
+	"color":[255, 255, 255, 255],
 
 	"displayName":"RENX Faction",
+    "displayNameWithArticle":"RENX Faction",
 
 	"logo": "graphics/factions/renx_flag_FFFFFF.png",
     "crest": "graphics/factions/renx_crest_FFFFFF.png",
@@ -41,27 +42,27 @@
 
 	"knownShips":{
 		"tags":["base_bp"],
-		"hulls":[],
+		"hulls":[]
 	},
 	"priorityShips":{
 		"tags":[],
-		"hulls":[],
+		"hulls":[]
 	},
 	"knownFighters":{
         "tags":["base_bp"],
-		"fighters":[],
+		"fighters":[]
 	},
 	"priorityFighters":{
 		"tags":[],
-		"fighters":[],
+		"fighters":[]
 	},
 	"knownWeapons":{
 		"tags":["base_bp"],
-		"weapons":[],
+		"weapons":[]
 	},
 	"priorityWeapons":{
 		"tags":[],
-		"weapons":[],
+		"weapons":[]
 	},
 	"knownHullMods": {
         "tags": ["standard"],
