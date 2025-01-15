@@ -1,5 +1,7 @@
 package com.luiges90.renx.ext_generators;
 
+import com.luiges90.renx.Util;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -16,7 +18,8 @@ public class FlagGenerator {
     public static final int[] COLOR_VALUES = {0, 85, 170, 255};
 
     public static void main(String[] args) {
-        List<String> colorList = new ArrayList<String>();
+        Util.deleteFileInDirectory("graphics/factions");
+        List<String> colorList = new ArrayList<>();
         for (int i : COLOR_VALUES) {
             for (int j : COLOR_VALUES) {
                 for (int k : COLOR_VALUES) {

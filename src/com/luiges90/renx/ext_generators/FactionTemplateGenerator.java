@@ -1,17 +1,23 @@
 package com.luiges90.renx.ext_generators;
 
+import com.luiges90.renx.Util;
+
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FactionTemplateGenerator {
     public static final int FACTION_COUNT = 8;
 
     public static void main(String[] args) {
+        Util.deleteFileInDirectory("data/world/factions");
         writeFactionList();
         writeFaction();
 
+        Util.deleteFileInDirectory("data/config/exerelinFactionConfig");
         writeNexFactionList();
         writeNexFactionConfig();
     }

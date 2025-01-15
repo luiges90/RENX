@@ -89,7 +89,7 @@
         "officerSkillsShuffleProbability": 0,
         "officerSkills": [],
 		"commanderSkillsShuffleProbability":0,
-		"commanderSkills":[],
+		"commanderSkills":[]
 	},
 	"illegalCommodities":[
 	],

@@ -5,7 +5,12 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -37,6 +42,17 @@ public class Util {
 
     public static <T> T from(Random random, T[] array) {
         return array[random.nextInt(array.length)];
+    }
+
+    public static void deleteFileInDirectory(String path) {
+        Path directory = Paths.get(path);
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
+            for (Path entry : stream) {
+                Files.delete(entry);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static List<String> getAllBaseHullsWithTag(String tag) {
