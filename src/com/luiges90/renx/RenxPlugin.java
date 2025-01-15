@@ -5,12 +5,16 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionDoctrineAPI;
 import com.fs.starfarer.api.campaign.FactionSpecAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.combat.MutableStat;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class RenxPlugin extends BaseModPlugin {
@@ -18,10 +22,11 @@ public class RenxPlugin extends BaseModPlugin {
     public static final int[] COLOR_VALUES = {0, 85, 170, 255};
 
     @Override
-    public void onNewGame() {
-        super.onNewGame();
+    public void onGameLoad(boolean newGame) {
+        super.onGameLoad(newGame);
 
-        Random rng = new Random(Util.byteArrayToLong(Global.getSector().getSeedString().getBytes()));
+        String seedStr = Global.getSector().getSeedString();
+        Random rng = new Random(Long.parseLong(seedStr.substring(3)));
 
         int index = 0;
         while (true) {
@@ -45,31 +50,16 @@ public class RenxPlugin extends BaseModPlugin {
 
             setDoctrine(faction, rng, hullTag);
 
-            index++;
-        }
-    }
-
-    @Override
-    public void onApplicationLoad() throws Exception {
-        super.onApplicationLoad();
-
-        Random rng = new Random(SEED);
-
-        int index = 0;
-        while (true) {
-            FactionSpecAPI spec = Global.getSettings().getFactionSpec("renx_faction" + index);
-            if (spec == null) break;
-
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
             config.pirateFaction = rng.nextFloat() < 0.2f;
-            java.util.Map<Alliance.Alignment, com.fs.starfarer.api.combat.MutableStat> alignments = config.getAlignments();
-            alignments.get(Alliance.Alignment.CORPORATE).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
-            alignments.get(Alliance.Alignment.TECHNOCRATIC).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
-            alignments.get(Alliance.Alignment.HIERARCHICAL).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
-            alignments.get(Alliance.Alignment.MILITARIST).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
-            alignments.get(Alliance.Alignment.DIPLOMATIC).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
-            alignments.get(Alliance.Alignment.IDEOLOGICAL).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
+            Map<Alliance.Alignment, MutableStat> alignments = config.getAlignments();
+            for (Alliance.Alignment alignment : Arrays.asList(
+                    Alliance.Alignment.CORPORATE, Alliance.Alignment.TECHNOCRATIC, Alliance.Alignment.HIERARCHICAL, Alliance.Alignment.MILITARIST, Alliance.Alignment.DIPLOMATIC, Alliance.Alignment.IDEOLOGICAL)) {
+                alignments.get(alignment).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
+            }
+            MemoryAPI mem = Global.getSector().getFaction("renx_faction" + index).getMemoryWithoutUpdate();
+            mem.set(Alliance.MEMORY_KEY_ALIGNMENTS, alignments);
 
             index++;
         }
@@ -125,196 +115,41 @@ public class RenxPlugin extends BaseModPlugin {
         switch (hullTag) {
             case "lowtech_bp":
                 weaponList = new String[]{
-                        "lightmg",
-                        "lightdualmg",
-                        "vulcan",
-                        "lightac",
-                        "lightdualac",
-                        "lightag",
-                        "lightneedler",
-                        "railgun",
-
-                        "heavymortar",
-                        "chaingun",
-                        "heavyac",
-                        "hveldriver",
-                        "heavymauler",
-                        "heavyneedler",
-                        "flak",
-                        "dualflak",
-
-                        "gauss",
-                        "hephag",
-                        "mark9",
-                        "devastator",
-                        "multineedler",
-
-
-                        "reaper",
-                        "atropos",
-                        "atropos_single",
-                        "swarmer",
-                        "annihilator",
-                        "heatseeker",
-                        "harpoon",
-                        "harpoon_single",
-                        "breach",
-                        "sabot",
-                        "sabot_single",
-
-                        "pilum",
-                        "breachpod",
-                        "harpoonpod",
-                        "sabotpod",
-                        "phasecl",
-                        "typhoon",
-
-                        "cyclone",
-                        "hurricane",
-                        "squall",
-                        "locust",
-
-                        "taclaser",
-                        "pdlaser",
-                        "lrpdlaser",
-                        "ioncannon",
-                        "gravitonbeam",
-                        "pulselaser",
-                        "phasebeam",
-
-                        "shredder",
-                        "heavymortar",
-                        "arbalest",
-                        "hellbore",
-
-                        "hammer",
-                        "hammer_single",
-                        "jackhammer",
-                        "salamanderpod",
-                        "annihilatorpod",
-                        "pilum_large",
-                        "hammerrack",
-                        "mininglaser",
-                        "miningblaster"};
+                    "lightmg", "lightdualmg", "vulcan", "lightac", "lightdualac", "lightag", "lightneedler", "railgun",
+                    "heavymortar", "chaingun", "heavyac", "hveldriver", "heavymauler", "heavyneedler", "flak", "dualflak",
+                    "gauss", "hephag", "mark9", "devastator", "multineedler", "reaper", "atropos", "atropos_single", "swarmer",
+                    "annihilator", "heatseeker", "harpoon", "harpoon_single", "breach", "sabot", "sabot_single", "pilum",
+                    "breachpod", "harpoonpod", "sabotpod", "phasecl", "typhoon", "cyclone", "hurricane", "squall", "locust",
+                    "taclaser", "pdlaser", "lrpdlaser", "ioncannon", "gravitonbeam", "pulselaser", "phasebeam", "shredder",
+                    "heavymortar", "arbalest", "hellbore", "hammer", "hammer_single", "jackhammer", "salamanderpod",
+                    "annihilatorpod", "pilum_large", "hammerrack", "mininglaser", "miningblaster"
+                };
                 break;
             case "midline_bp":
                 weaponList = new String[]{
-                        "gorgon",
-                        "gorgonpod",
-                        "gazer",
-                        "gazerpod",
-                        "dragon",
-                        "dragonpod",
-                        "hydra",
-                        "lightmg",
-                        "lightdualmg",
-                        "lightac",
-                        "lightdualac",
-                        "lightag",
-                        "heavymg",
-                        "flak",
-                        "heavymauler",
-                        "heavyac",
-                        "mjolnir",
-                        "pdburst",
-                        "pdlaser",
-                        "lrpdlaser",
-                        "taclaser",
-                        "ioncannon",
-                        "phasebeam",
-                        "gravitonbeam",
-                        "irautolance",
-                        "heavyburst",
-                        "ionbeam",
-                        "guardian",
-                        "hil",
-
-                        "vulcan",
-                        "railgun",
-                        "heavymortar",
-                        "chaingun",
-                        "dualflak",
-                        "hephag",
-                        "mark9",
-                        "devastator",
-                        "reaper",
-                        "atropos",
-                        "atropos_single",
-                        "swarmer",
-                        "annihilator",
-                        "heatseeker",
-                        "harpoon",
-                        "harpoon_single",
-                        "breach",
-                        "sabot",
-                        "sabot_single",
-                        "pilum",
-                        "breachpod",
-                        "harpoonpod",
-                        "sabotpod",
-                        "phasecl",
-                        "typhoon",
-                        "squall",
-                        "locust",
-                        "irpulse",
-                        "pulselaser",
-                        "autopulse",
+                    "gorgon", "gorgonpod", "gazer", "gazerpod", "dragon", "dragonpod", "hydra", "lightmg", "lightdualmg",
+                    "lightac", "lightdualac", "lightag", "heavymg", "flak", "heavymauler", "heavyac", "mjolnir", "pdburst",
+                    "pdlaser", "lrpdlaser", "taclaser", "ioncannon", "phasebeam", "gravitonbeam", "irautolance", "heavyburst",
+                    "ionbeam", "guardian", "hil", "vulcan", "railgun", "heavymortar", "chaingun", "dualflak", "hephag", "mark9",
+                    "devastator", "reaper", "atropos", "atropos_single", "swarmer", "annihilator", "heatseeker", "harpoon",
+                    "harpoon_single", "breach", "sabot", "sabot_single", "pilum", "breachpod", "harpoonpod", "sabotpod",
+                    "phasecl", "typhoon", "squall", "locust", "irpulse", "pulselaser", "autopulse"
                 };
                 break;
             case "hightech_bp":
                 weaponList = new String[] {
-                        "pdlaser",
-                        "taclaser",
-                        "ioncannon",
-                        "irpulse",
-                        "lrpdlaser",
-                        "pdburst",
-                        "amblaster",
-                        "phasebeam",
-                        "gravitonbeam",
-                        "pulselaser",
-                        "heavyblaster",
-                        "heavyburst",
-                        "ionpulser",
-                        "ionbeam",
-                        "plasma",
-                        "hil",
-                        "autopulse",
-                        "guardian",
-                        "tachyonlance",
-                        "reaper",
-                        "atropos",
-                        "atropos_single",
-                        "swarmer",
-                        "annihilator",
-                        "heatseeker",
-                        "harpoon",
-                        "harpoon_single",
-                        "breach",
-                        "sabot",
-                        "sabot_single",
-                        "harpoonpod",
-                        "breachpod",
-                        "sabotpod",
-                        "salamanderpod",
-                        "phasecl",
-                        "typhoon",
-                        "cyclone",
-                        "hurricane",
-                        "squall",
-                        "locust",
-                        "railgun",
-                        "lightneedler",
-                        "hveldriver",
-                        "heavyneedler",
-                        "mjolnir",
-                        "multineedler",
+                    "pdlaser", "taclaser", "ioncannon", "irpulse", "lrpdlaser", "pdburst", "amblaster", "phasebeam",
+                    "gravitonbeam", "pulselaser", "heavyblaster", "heavyburst", "ionpulser", "ionbeam", "plasma",
+                    "hil", "autopulse", "guardian", "tachyonlance", "reaper", "atropos", "atropos_single", "swarmer",
+                    "annihilator", "heatseeker", "harpoon", "harpoon_single", "breach", "sabot", "sabot_single",
+                    "harpoonpod", "breachpod", "sabotpod", "salamanderpod", "phasecl", "typhoon", "cyclone",
+                    "hurricane", "squall", "locust", "railgun", "lightneedler", "hveldriver", "heavyneedler",
+                    "mjolnir", "multineedler"
                 };
+                break;
             default:
                 weaponList = new String[]{
-                        "hurricane",
-                        "squall",
-                        "locust",
+                        "hurricane", "squall", "locust",
                 };
                 break;
         }
@@ -332,34 +167,17 @@ public class RenxPlugin extends BaseModPlugin {
         switch (hullTag) {
             case "lowtech_bp":
                 fighterList = new String[]{
-                        "talon_wing",
-                        "broadsword_wing",
-                        "warthog_wing",
-                        "piranha_wing",
-                        "hoplon_wing",
-                        "longbow_wing",
-                        "perdition_wing",
+                        "talon_wing", "broadsword_wing", "warthog_wing", "piranha_wing", "hoplon_wing", "longbow_wing", "perdition_wing"
                 };
                 break;
             case "midline_bp":
                 fighterList = new String[]{
-                        "thunder_wing",
-                        "gladius_wing",
-                        "talon_wing",
-                        "claw_wing",
+                        "thunder_wing", "gladius_wing", "talon_wing", "claw_wing"
                 };
                 break;
             case "hightech_bp":
                 fighterList = new String[]{
-                        "broadsword_wing",
-                        "dagger_wing",
-                        "trident_wing",
-                        "wasp_wing",
-                        "xyphos_wing",
-                        "claw_wing",
-                        "trident_wing",
-                        "cobra_wing",
-                        "longbow_wing",
+                        "broadsword_wing", "dagger_wing", "trident_wing", "wasp_wing", "xyphos_wing", "claw_wing", "trident_wing", "cobra_wing", "longbow_wing"
                 };
                 break;
             default:
@@ -389,48 +207,23 @@ public class RenxPlugin extends BaseModPlugin {
         switch (hullTag) {
             case "lowtech_bp":
                 hullList = new String[]{
-                        "manticore",
-                        "eradicator",
-                        "onslaught",
-                        "retribution",
-                        "legion",
-                        "invictus"};
+                        "manticore", "eradicator", "onslaught", "retribution", "legion", "invictus"
+                };
                 break;
             case "midline_bp":
                 hullList = new String[]{
-                        "monitor",
-                        "eagle",
-                        "champion",
-                        "gryphon",
-                        "conquest",
-                        "pegasus"};
+                        "monitor", "eagle", "champion", "gryphon", "conquest",  "pegasus"
+                };
                 break;
             case "hightech_bp":
                 hullList = new String[]{
-                        "omen",
-                        "tempest",
-                        "hyperion",
-                        "scarab",
-                        "medusa",
-                        "apogee",
-                        "aurora",
-                        "astral",
-                        "odyssey",
-                        "paragon",
-                        "shade",
-                        "afflictor",
-                        "harbinger",
-                        "doom",
-                        "phantom",
-                        "revenant"};
+                        "omen", "tempest", "hyperion", "scarab", "medusa", "apogee", "aurora", "astral", "odyssey", "paragon",
+                        "shade", "afflictor", "harbinger", "doom", "phantom",  "revenant"
+                };
                 break;
             case "pirate_bp":
                 hullList = new String[]{
-                        "vanguard_pirates",
-                        "manticore_pirates",
-                        "falcon_p",
-                        "eradicator_pirates",
-                        "atlas2",};
+                        "vanguard_pirates", "manticore_pirates", "falcon_p", "eradicator_pirates", "atlas2"};
                 break;
             default:
                 hullList = new String[]{};
@@ -444,12 +237,21 @@ public class RenxPlugin extends BaseModPlugin {
 
     private static void setNameAndColor(FactionSpecAPI spec, int[] color, Random rng) {
         spec.setColor(new Color(color[0], color[1], color[2]));
-        String colorStr = String.format("%02X%02X%02X", color[0], color[1], color[2]);
-        spec.setCrest("graphics/factions/renx_crest_" + colorStr + ".png");
-        spec.setLogo("graphics/factions/renx_flag_" + colorStr + ".png");
+        spec.setBaseUIColor(new Color(color[0], color[1], color[2]));
+        spec.setBrightUIColor(new Color(color[0], color[1], color[2]).brighter());
+        spec.setDarkUIColor(new Color(color[0], color[1], color[2]).darker());
+        spec.setGridUIColor(new Color(color[0], color[1], color[2]));
+        spec.setSecondaryUIColor(new Color(color[0], color[1], color[2]));
+        //String colorStr = String.format("%02X%02X%02X", color[0], color[1], color[2]);
+        //spec.setCrest("crest_" + colorStr);
+        //spec.setLogo("flag_" + colorStr);
 
         String name = Util.toTitleCase(WordGenerator.generateWord(rng));
         spec.setDisplayName(name);
+        spec.setDisplayNameIsOrAre(name);
+        spec.setDisplayNameWithArticle(name);
+        spec.setDisplayNameLong(name);
+        spec.setDisplayNameLongWithArticle(name);
         spec.setShipNamePrefix(String.format("%s%s%s", name.charAt(0), name.charAt(1), name.charAt(2)).toUpperCase());
     }
 

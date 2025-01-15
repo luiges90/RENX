@@ -10,10 +10,6 @@
   "diplomacyNegativeChance": {},
   "morality": "neutral",
   "alignments": {
-    "hierarchical": -1,
-    "militarist": -0.5,
-    "diplomatic": 0.5,
-    "ideological": 1
   },
   "diplomacyTraits": [],
   "freeMarket": false,

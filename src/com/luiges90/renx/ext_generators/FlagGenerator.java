@@ -4,21 +4,42 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
 
 public class FlagGenerator {
     public static final int[] COLOR_VALUES = {0, 85, 170, 255};
 
     public static void main(String[] args) {
+        List<String> colorList = new ArrayList<String>();
         for (int i : COLOR_VALUES) {
             for (int j : COLOR_VALUES) {
                 for (int k : COLOR_VALUES) {
-                    if (i + COLOR_VALUES[j] + COLOR_VALUES[k] <= 100) continue;
-                    generateImage(i, COLOR_VALUES[j], COLOR_VALUES[k], 410, 256, "flag");
-                    generateImage(i, COLOR_VALUES[j], COLOR_VALUES[k], 256, 256, "crest");
+                    if (i + j + k <= 100) continue;
+                    generateImage(i, j, k, 410, 256, "flag");
+                    generateImage(i, j, k, 256, 256, "crest");
+                    colorList.add(String.format("%02X%02X%02X", i, j, k));
                 }
             }
+        }
+
+        try {
+            String template = new String(Files.readAllBytes(Paths.get("data-template/settings.json")));
+            try (FileWriter writer = new FileWriter("data/config/settings.json")) {
+                StringBuilder sb = new StringBuilder();
+                for (String color : colorList) {
+                    sb.append("\"").append("flag_").append(color).append("\":\"").append("graphics/factions/renx_flag_").append(color).append(".png\",\n");
+                    sb.append("\"").append("crest_").append(color).append("\":\"").append("graphics/factions/renx_crest_").append(color).append(".png\",\n");
+                }
+                writer.write(template.replace("{{flags}}", sb.toString()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

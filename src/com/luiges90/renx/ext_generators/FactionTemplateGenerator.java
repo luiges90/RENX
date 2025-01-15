@@ -43,7 +43,11 @@ public class FactionTemplateGenerator {
             String template = new String(Files.readAllBytes(Paths.get("data-template/faction.json")));
             for (int i = 0; i < FACTION_COUNT; ++i) {
                 try (FileWriter writer = new FileWriter("data/world/factions/renx_faction" + i + ".faction")) {
-                    writer.write(template.replace("{{id}}", "renx_faction" + i));
+                    writer.write(
+                            template
+                                    .replace("{{id}}", "renx_faction" + i)
+                                    .replace("{{index}}", i + "")
+                    );
                 }
             }
         } catch (IOException e) {

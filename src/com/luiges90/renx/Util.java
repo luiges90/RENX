@@ -39,13 +39,6 @@ public class Util {
         return array[random.nextInt(array.length)];
     }
 
-    public static long byteArrayToLong(byte[] bytes) {
-        ByteBuffer buffer = ByteBuffer.allocate(8);
-        buffer.put(bytes, 0, Math.min(8, bytes.length));
-        buffer.flip(); // need to flip the buffer before reading
-        return buffer.getLong();
-    }
-
     public static List<String> getAllBaseHullsWithTag(String tag) {
         List<ShipHullSpecAPI> ships = Global.getSettings().getAllShipHullSpecs();
         ArrayList<String> result = new ArrayList<String>();
