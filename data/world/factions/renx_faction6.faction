@@ -1,9 +1,9 @@
 {
-	"id":"renx_faction3",
+	"id":"renx_faction6",
 	"color":[255, 255, 255, 255],
 
-	"displayName":"RENX Faction 3",
-    "displayNameWithArticle":"RENX Faction 3",
+	"displayName":"RENX Faction 6",
+    "displayNameWithArticle":"RENX Faction 6",
 
 	"logo": "graphics/factions/renx_flag_FFFFFF.png",
     "crest": "graphics/factions/renx_crest_FFFFFF.png",

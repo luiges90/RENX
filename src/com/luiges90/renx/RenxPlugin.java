@@ -41,11 +41,14 @@ public class RenxPlugin extends BaseModPlugin {
             if (color[0] + color[1] + color[2] <= 100) continue;
 
             setNameAndColor(spec, color, rng);
+            setIllegalCommodities(spec, rng);
 
             FactionAPI faction = Global.getSector().getFaction("renx_faction" + index);
 
-            String hullTag = addHulls(rng, faction);
-            addFighters(hullTag, faction);
+            String[] hullTags = new String[]{"lowtech_bp", "midline_bp", "hightech_bp", "pirate_bp"};
+            String hullTag = Util.from(rng, hullTags);
+            addHulls(faction, hullTag);
+            addFighters(faction, hullTag);
             addWeapons(faction, hullTag);
 
             setDoctrine(faction, rng, hullTag);
@@ -53,15 +56,99 @@ public class RenxPlugin extends BaseModPlugin {
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
             config.pirateFaction = rng.nextFloat() < 0.2f;
-            Map<Alliance.Alignment, MutableStat> alignments = config.getAlignments();
-            for (Alliance.Alignment alignment : Arrays.asList(
-                    Alliance.Alignment.CORPORATE, Alliance.Alignment.TECHNOCRATIC, Alliance.Alignment.HIERARCHICAL, Alliance.Alignment.MILITARIST, Alliance.Alignment.DIPLOMATIC, Alliance.Alignment.IDEOLOGICAL)) {
-                alignments.get(alignment).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
+            setDiplomacyTraits(config, rng);
+            config.freeMarket = config.diplomacyTraits.contains("anarchist");
+
+            config.defenceStations.clear();
+            if (hullTag.equals("lowtech_bp") || hullTag.equals("pirate_bp") || rng.nextFloat() < 0.2f) {
+                config.defenceStations.add(new NexFactionConfig.DefenceStationSet(1, "orbitalstation", "battlestation", "starfortress"));
             }
-            MemoryAPI mem = Global.getSector().getFaction("renx_faction" + index).getMemoryWithoutUpdate();
-            mem.set(Alliance.MEMORY_KEY_ALIGNMENTS, alignments);
+            if (hullTag.equals("midline_bp") || hullTag.equals("pirate_bp") || rng.nextFloat() < 0.2f) {
+                config.defenceStations.add(new NexFactionConfig.DefenceStationSet(1, "orbitalstation_mid", "battlestation_mid", "starfortress_mid"));
+            }
+            if (hullTag.equals("hightech_bp") || hullTag.equals("pirate_bp") || rng.nextFloat() < 0.2f) {
+                config.defenceStations.add(new NexFactionConfig.DefenceStationSet(1, "orbitalstation_high", "battlestation_high", "starfortress_high"));
+            }
+
+            if (!config.diplomacyTraits.contains("dislikes_ai") && !config.diplomacyTraits.contains("hates_ai")) {
+                if (rng.nextFloat() < 0.7f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("nanoforge_pristine", 1, rng.nextFloat() * 0.5f));
+                if (rng.nextFloat() < 0.7f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("synchrotron", 1, rng.nextFloat() * 0.5f));
+                if (rng.nextFloat() < 0.7f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("population_upsize", 1, rng.nextFloat() * 0.5f));
+            } else if (!config.diplomacyTraits.contains("likes_ai")) {
+                if (rng.nextFloat() < 0.3f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("nanoforge_pristine", 1, rng.nextFloat() * 0.2f));
+                if (rng.nextFloat() < 0.3f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("synchrotron", 1, rng.nextFloat() * 0.2f));
+                if (rng.nextFloat() < 0.1f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("population_upsize", 1, rng.nextFloat() * 0.2f));
+                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_heavyindustry", 1, rng.nextFloat() * 0.2f));
+                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_fuelprod", 1, rng.nextFloat() * 0.2f));
+                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_military", 1, rng.nextFloat() * 0.2f));
+                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_station", 1, rng.nextFloat() * 0.2f));
+                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_other", 1, rng.nextFloat() * 0.2f));
+                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_any", 1, rng.nextFloat() * 0.2f));
+            } else {
+                if (rng.nextFloat() < 0.1f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("nanoforge_pristine", 1, rng.nextFloat() * 0.1f));
+                if (rng.nextFloat() < 0.1f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("synchrotron", 1, rng.nextFloat() * 0.1f));
+                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_heavyindustry", 1, rng.nextFloat() * 0.5f));
+                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_fuelprod", 1, rng.nextFloat() * 0.5f));
+                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_military", 1, rng.nextFloat() * 0.5f));
+                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_station", 1, rng.nextFloat() * 0.5f));
+                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_other", 1, rng.nextFloat() * 0.5f));
+                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_any", 1, rng.nextFloat() * 0.5f));
+            }
+
+            setAlignments(config, rng, index);
 
             index++;
+        }
+    }
+
+    private static void setDiplomacyTraits(NexFactionConfig config, Random rng) {
+        config.diplomacyTraits.clear();
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("paranoid");
+        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("pacifist");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("predatory");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("helps_allies");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("irredentist");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("stalwart");
+        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("weak-willed");
+        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("foreverwar");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("selfrighteous");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("temperamental");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("dislikes_ai");
+        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("hates_ai");
+        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("likes_ai");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("envious");
+        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("submissive");
+        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("neutralist");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("monopolist");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("law_and_order");
+        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("anarchist");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("lowprofile");
+        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("devious");
+    }
+
+    private static void setAlignments(NexFactionConfig config, Random rng, int index) {
+        Map<Alliance.Alignment, MutableStat> alignments = config.getAlignments();
+        for (Alliance.Alignment alignment : Arrays.asList(
+                Alliance.Alignment.CORPORATE, Alliance.Alignment.TECHNOCRATIC, Alliance.Alignment.HIERARCHICAL, Alliance.Alignment.MILITARIST, Alliance.Alignment.DIPLOMATIC, Alliance.Alignment.IDEOLOGICAL)) {
+            alignments.get(alignment).modifyFlat("renx", rng.nextInt(5) * 0.5f - 1);
+        }
+        MemoryAPI mem = Global.getSector().getFaction("renx_faction" + index).getMemoryWithoutUpdate();
+        mem.set(Alliance.MEMORY_KEY_ALIGNMENTS, alignments);
+    }
+
+    private static void setIllegalCommodities(FactionSpecAPI spec, Random rng) {
+        spec.getIllegalCommodities().clear();
+        if (rng.nextFloat() < 0.9f) {
+            spec.getIllegalCommodities().add("ai_cores");
+        }
+        if (rng.nextFloat() < 0.5f) {
+            spec.getIllegalCommodities().add("drugs");
+        }
+        if (rng.nextFloat() < 0.5f) {
+            spec.getIllegalCommodities().add("organs");
+        }
+        if (rng.nextFloat() < 0.3f) {
+            spec.getIllegalCommodities().add("hand_weapons");
         }
     }
 
@@ -158,7 +245,7 @@ public class RenxPlugin extends BaseModPlugin {
         }
     }
 
-    private static void addFighters(String hullTag, FactionAPI faction) {
+    private static void addFighters(FactionAPI faction, String hullTag) {
         List<String> baseFighters = Util.getAllFightersWithTag(hullTag);
         for (String baseFighter : baseFighters) {
             faction.addKnownFighter(baseFighter, true);
@@ -189,9 +276,7 @@ public class RenxPlugin extends BaseModPlugin {
         }
     }
 
-    private static String addHulls(Random rng, FactionAPI faction) {
-        String[] hullTags = new String[]{"lowtech_bp", "midline_bp", "hightech_bp", "pirate_bp"};
-        String hullTag = Util.from(rng, hullTags);
+    private static String addHulls(FactionAPI faction, String hullTag) {
         List<String> baseHulls = Util.getAllBaseHullsWithTag("base_bp");
         for (String baseHull : baseHulls) {
             faction.addKnownShip(baseHull, true);
