@@ -41,7 +41,6 @@ public class RenxPlugin extends BaseModPlugin {
             if (color[0] + color[1] + color[2] <= 100) continue;
 
             setNameAndColor(spec, color, rng);
-            setIllegalCommodities(spec, rng);
 
             FactionAPI faction = Global.getSector().getFaction("renx_faction" + index);
 
@@ -52,6 +51,7 @@ public class RenxPlugin extends BaseModPlugin {
             addWeapons(faction, hullTag);
 
             setDoctrine(faction, rng, hullTag);
+            setIllegalCommodities(faction, rng);
 
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
@@ -59,41 +59,8 @@ public class RenxPlugin extends BaseModPlugin {
             setDiplomacyTraits(config, rng);
             config.freeMarket = config.diplomacyTraits.contains("anarchist");
 
-            config.defenceStations.clear();
-            if (hullTag.equals("lowtech_bp") || hullTag.equals("pirate_bp") || rng.nextFloat() < 0.2f) {
-                config.defenceStations.add(new NexFactionConfig.DefenceStationSet(1, "orbitalstation", "battlestation", "starfortress"));
-            }
-            if (hullTag.equals("midline_bp") || hullTag.equals("pirate_bp") || rng.nextFloat() < 0.2f) {
-                config.defenceStations.add(new NexFactionConfig.DefenceStationSet(1, "orbitalstation_mid", "battlestation_mid", "starfortress_mid"));
-            }
-            if (hullTag.equals("hightech_bp") || hullTag.equals("pirate_bp") || rng.nextFloat() < 0.2f) {
-                config.defenceStations.add(new NexFactionConfig.DefenceStationSet(1, "orbitalstation_high", "battlestation_high", "starfortress_high"));
-            }
-
-            if (!config.diplomacyTraits.contains("dislikes_ai") && !config.diplomacyTraits.contains("hates_ai")) {
-                if (rng.nextFloat() < 0.7f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("nanoforge_pristine", 1, rng.nextFloat() * 0.5f));
-                if (rng.nextFloat() < 0.7f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("synchrotron", 1, rng.nextFloat() * 0.5f));
-                if (rng.nextFloat() < 0.7f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("population_upsize", 1, rng.nextFloat() * 0.5f));
-            } else if (!config.diplomacyTraits.contains("likes_ai")) {
-                if (rng.nextFloat() < 0.3f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("nanoforge_pristine", 1, rng.nextFloat() * 0.2f));
-                if (rng.nextFloat() < 0.3f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("synchrotron", 1, rng.nextFloat() * 0.2f));
-                if (rng.nextFloat() < 0.1f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("population_upsize", 1, rng.nextFloat() * 0.2f));
-                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_heavyindustry", 1, rng.nextFloat() * 0.2f));
-                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_fuelprod", 1, rng.nextFloat() * 0.2f));
-                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_military", 1, rng.nextFloat() * 0.2f));
-                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_station", 1, rng.nextFloat() * 0.2f));
-                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_other", 1, rng.nextFloat() * 0.2f));
-                if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_any", 1, rng.nextFloat() * 0.2f));
-            } else {
-                if (rng.nextFloat() < 0.1f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("nanoforge_pristine", 1, rng.nextFloat() * 0.1f));
-                if (rng.nextFloat() < 0.1f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("synchrotron", 1, rng.nextFloat() * 0.1f));
-                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_heavyindustry", 1, rng.nextFloat() * 0.5f));
-                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_fuelprod", 1, rng.nextFloat() * 0.5f));
-                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_military", 1, rng.nextFloat() * 0.5f));
-                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_station", 1, rng.nextFloat() * 0.5f));
-                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_other", 1, rng.nextFloat() * 0.5f));
-                if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_any", 1, rng.nextFloat() * 0.5f));
-            }
+            setDefenceStations(config, hullTag, rng);
+            setBonusSeeds(config, rng);
 
             setAlignments(config, rng, index);
 
@@ -101,29 +68,69 @@ public class RenxPlugin extends BaseModPlugin {
         }
     }
 
+    private static void setDefenceStations(NexFactionConfig config, String hullTag, Random rng) {
+        config.defenceStations.clear();
+        if (hullTag.equals("lowtech_bp") || hullTag.equals("pirate_bp") || rng.nextFloat() < 0.2f) {
+            config.defenceStations.add(new NexFactionConfig.DefenceStationSet(1, "orbitalstation", "battlestation", "starfortress"));
+        }
+        if (hullTag.equals("midline_bp") || hullTag.equals("pirate_bp") || rng.nextFloat() < 0.2f) {
+            config.defenceStations.add(new NexFactionConfig.DefenceStationSet(1, "orbitalstation_mid", "battlestation_mid", "starfortress_mid"));
+        }
+        if (hullTag.equals("hightech_bp") || hullTag.equals("pirate_bp") || rng.nextFloat() < 0.2f) {
+            config.defenceStations.add(new NexFactionConfig.DefenceStationSet(1, "orbitalstation_high", "battlestation_high", "starfortress_high"));
+        }
+    }
+
+    private static void setBonusSeeds(NexFactionConfig config, Random rng) {
+        if (!config.diplomacyTraits.contains("dislikes_ai") && !config.diplomacyTraits.contains("hates_ai")) {
+            if (rng.nextFloat() < 0.7f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("nanoforge_pristine", 1, rng.nextFloat() * 0.5f));
+            if (rng.nextFloat() < 0.7f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("synchrotron", 1, rng.nextFloat() * 0.5f));
+            if (rng.nextFloat() < 0.7f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("population_upsize", 1, rng.nextFloat() * 0.5f));
+        } else if (!config.diplomacyTraits.contains("likes_ai")) {
+            if (rng.nextFloat() < 0.3f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("nanoforge_pristine", 1, rng.nextFloat() * 0.2f));
+            if (rng.nextFloat() < 0.3f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("synchrotron", 1, rng.nextFloat() * 0.2f));
+            if (rng.nextFloat() < 0.1f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("population_upsize", 1, rng.nextFloat() * 0.2f));
+            if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_heavyindustry", 1, rng.nextFloat() * 0.2f));
+            if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_fuelprod", 1, rng.nextFloat() * 0.2f));
+            if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_military", 1, rng.nextFloat() * 0.2f));
+            if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_station", 1, rng.nextFloat() * 0.2f));
+            if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_other", 1, rng.nextFloat() * 0.2f));
+            if (rng.nextFloat() < 0.2f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_any", 1, rng.nextFloat() * 0.2f));
+        } else {
+            if (rng.nextFloat() < 0.1f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("nanoforge_pristine", 1, rng.nextFloat() * 0.1f));
+            if (rng.nextFloat() < 0.1f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("synchrotron", 1, rng.nextFloat() * 0.1f));
+            if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_heavyindustry", 1, rng.nextFloat() * 0.5f));
+            if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_fuelprod", 1, rng.nextFloat() * 0.5f));
+            if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_military", 1, rng.nextFloat() * 0.5f));
+            if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_station", 1, rng.nextFloat() * 0.5f));
+            if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_other", 1, rng.nextFloat() * 0.5f));
+            if (rng.nextFloat() < 0.5f) config.bonusSeeds.add(new NexFactionConfig.BonusSeed("aiCore_any", 1, rng.nextFloat() * 0.5f));
+        }
+    }
+
     private static void setDiplomacyTraits(NexFactionConfig config, Random rng) {
         config.diplomacyTraits.clear();
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("paranoid");
-        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("pacifist");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("predatory");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("helps_allies");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("irredentist");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("stalwart");
-        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("weak-willed");
-        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("foreverwar");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("selfrighteous");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("temperamental");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("dislikes_ai");
-        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("hates_ai");
-        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("likes_ai");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("envious");
-        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("submissive");
-        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("neutralist");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("monopolist");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("law_and_order");
-        else if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("anarchist");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("lowprofile");
-        if (rng.nextFloat() < 0.3f) config.diplomacyTraits.add("devious");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("paranoid");
+        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("pacifist");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("predatory");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("helps_allies");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("irredentist");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("stalwart");
+        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("weak-willed");
+        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("foreverwar");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("selfrighteous");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("temperamental");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("dislikes_ai");
+        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("hates_ai");
+        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("likes_ai");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("envious");
+        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("submissive");
+        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("neutralist");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("monopolist");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("law_and_order");
+        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("anarchist");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("lowprofile");
+        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("devious");
     }
 
     private static void setAlignments(NexFactionConfig config, Random rng, int index) {
@@ -136,19 +143,18 @@ public class RenxPlugin extends BaseModPlugin {
         mem.set(Alliance.MEMORY_KEY_ALIGNMENTS, alignments);
     }
 
-    private static void setIllegalCommodities(FactionSpecAPI spec, Random rng) {
-        spec.getIllegalCommodities().clear();
+    private static void setIllegalCommodities(FactionAPI faction, Random rng) {
         if (rng.nextFloat() < 0.9f) {
-            spec.getIllegalCommodities().add("ai_cores");
+            faction.makeCommodityIllegal("ai_cores");
         }
         if (rng.nextFloat() < 0.5f) {
-            spec.getIllegalCommodities().add("drugs");
+            faction.makeCommodityIllegal("drugs");
         }
         if (rng.nextFloat() < 0.5f) {
-            spec.getIllegalCommodities().add("organs");
+            faction.makeCommodityIllegal("organs");
         }
         if (rng.nextFloat() < 0.3f) {
-            spec.getIllegalCommodities().add("hand_weapons");
+            faction.makeCommodityIllegal("hand_weapons");
         }
     }
 
@@ -159,7 +165,7 @@ public class RenxPlugin extends BaseModPlugin {
         doctrine.setAutofitRandomizeProbability(rng.nextFloat());
 
         int phaseShips = hullTag.equals("hightech_bp") ? rng.nextInt(3) : 0;
-        int warships = rng.nextInt(3) + 3 - phaseShips;
+        int warships = rng.nextInt(2) + 4 - phaseShips;
         int carriers = 7 - warships;
         doctrine.setPhaseShips(phaseShips);
         doctrine.setWarships(warships);
@@ -327,9 +333,9 @@ public class RenxPlugin extends BaseModPlugin {
         spec.setDarkUIColor(new Color(color[0], color[1], color[2]).darker());
         spec.setGridUIColor(new Color(color[0], color[1], color[2]));
         spec.setSecondaryUIColor(new Color(color[0], color[1], color[2]));
-        //String colorStr = String.format("%02X%02X%02X", color[0], color[1], color[2]);
-        //spec.setCrest("crest_" + colorStr);
-        //spec.setLogo("flag_" + colorStr);
+        String colorStr = String.format("%02X%02X%02X", color[0], color[1], color[2]);
+        spec.setCrest("graphics/factions/renx_crest_" + colorStr + ".png");
+        spec.setLogo("graphics/factions/renx_flag_" + colorStr + ".png");
 
         String name = Util.toTitleCase(WordGenerator.generateWord(rng));
         spec.setDisplayName(name);
@@ -337,7 +343,9 @@ public class RenxPlugin extends BaseModPlugin {
         spec.setDisplayNameWithArticle(name);
         spec.setDisplayNameLong(name);
         spec.setDisplayNameLongWithArticle(name);
-        spec.setShipNamePrefix(String.format("%s%s%s", name.charAt(0), name.charAt(1), name.charAt(2)).toUpperCase());
+        spec.setPersonNamePrefix(name);
+        spec.setPersonNamePrefixAOrAn(Arrays.asList('a', 'e', 'i', 'o', 'u').contains(name.charAt(0)) ? "an" : "a");
+        spec.setShipNamePrefix(String.format("%s%s%s", name.charAt(0), name.length() > 1 ? name.charAt(1) : "", name.length() > 2 ? name.charAt(2) : "").toUpperCase());
     }
 
 }

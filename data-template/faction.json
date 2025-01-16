@@ -73,13 +73,13 @@
 		"carriers":1,
 		"phaseShips":1,
 
-		"officerQuality":1,
+		"officerQuality":3,
 		"shipQuality":1,
-		"numShips":5,
+		"numShips":3,
 
 		"shipSize":3,
 
-		"aggression":5,
+		"aggression":3,
 
 		"combatFreighterProbability":1,
 		"combatFreighterCombatUseFraction":1,
