@@ -1,11 +1,11 @@
 {
-  "id": "renx",
+  "id": "aa_renx",
   "name": "RENX",
   "author": "luiges90 (aka pwhk)",
   "utility": false,
   "version": { "major": 0, "minor": 0, "patch": 1 },
   "description": "",
-  "gameVersion": "0.97a-RC6",
+  "gameVersion": "0.97a-RC11",
   "jars": [ "jars/renx.jar" ],
   "modPlugin": "com.luiges90.renx.RenxPlugin",
   "dependencies": [

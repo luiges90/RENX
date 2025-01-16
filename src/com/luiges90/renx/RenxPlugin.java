@@ -110,27 +110,27 @@ public class RenxPlugin extends BaseModPlugin {
 
     private static void setDiplomacyTraits(NexFactionConfig config, Random rng) {
         config.diplomacyTraits.clear();
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("paranoid");
-        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("pacifist");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("predatory");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("helps_allies");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("irredentist");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("stalwart");
-        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("weak-willed");
-        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("foreverwar");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("selfrighteous");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("temperamental");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("dislikes_ai");
-        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("hates_ai");
-        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("likes_ai");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("envious");
-        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("submissive");
-        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("neutralist");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("monopolist");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("law_and_order");
-        else if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("anarchist");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("lowprofile");
-        if (rng.nextFloat() < 0.2f) config.diplomacyTraits.add("devious");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("paranoid");
+        else if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("pacifist");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("predatory");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("helps_allies");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("irredentist");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("stalwart");
+        else if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("weak-willed");
+        else if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("foreverwar");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("selfrighteous");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("temperamental");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("dislikes_ai");
+        else if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("hates_ai");
+        else if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("likes_ai");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("envious");
+        else if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("submissive");
+        else if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("neutralist");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("monopolist");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("law_and_order");
+        else if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("anarchist");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("lowprofile");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("devious");
     }
 
     private static void setAlignments(NexFactionConfig config, Random rng, int index) {
@@ -345,7 +345,7 @@ public class RenxPlugin extends BaseModPlugin {
         spec.setDisplayNameLongWithArticle(name);
         spec.setPersonNamePrefix(name);
         spec.setPersonNamePrefixAOrAn(Arrays.asList('a', 'e', 'i', 'o', 'u').contains(name.charAt(0)) ? "an" : "a");
-        spec.setShipNamePrefix(String.format("%s%s%s", name.charAt(0), name.length() > 1 ? name.charAt(1) : "", name.length() > 2 ? name.charAt(2) : "").toUpperCase());
+        spec.setShipNamePrefix(String.format("%s%sS", name.charAt(0), name.length() > 1 ? name.charAt(1) : "").toUpperCase());
     }
 
 }
