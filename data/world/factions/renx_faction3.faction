@@ -7,7 +7,7 @@
 
 	"logo": "graphics/factions/renx_flag_FFFFFF.png",
     "crest": "graphics/factions/renx_crest_FFFFFF.png",
-	"shipNamePrefix":"RENX",
+	"shipNamePrefix":"ISS",
     "shipNameSources": {
       "GENERAL": 1,
       "PIRATES": 1,

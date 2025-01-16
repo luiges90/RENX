@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionDoctrineAPI;
 import com.fs.starfarer.api.campaign.FactionSpecAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import exerelin.campaign.alliances.Alliance;
@@ -64,7 +65,39 @@ public class RenxPlugin extends BaseModPlugin {
 
             setAlignments(config, rng, index);
 
+            if (config.pirateFaction) {
+                spec.getMusicMap().put("theme", "music_pirates_market_neutral");
+                spec.getMusicMap().put("market_neutral", "music_pirates_market_neutral");
+                spec.getMusicMap().put("market_hostile", "music_pirates_market_hostile");
+                spec.getMusicMap().put("market_friendly", "music_pirates_market_friendly");
+                spec.getMusicMap().put("encounter_neutral", "music_pirates_encounter_neutral");
+                spec.getMusicMap().put("encounter_hostile", "music_pirates_encounter_hostile");
+                spec.getMusicMap().put("encounter_friendly", "music_pirates_encounter_friendly");
+            }
+
             index++;
+        }
+
+        if (newGame) {
+            index = 0;
+            while (true) {
+                FactionAPI faction = Global.getSector().getFaction("renx_faction" + index);
+                if (faction == null) break;
+
+                NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
+                boolean thisPirate = config.pirateFaction;
+
+                List<FactionAPI> allFactions = Global.getSector().getAllFactions();
+                for (FactionAPI f : allFactions) {
+                    boolean otherPirate = NexConfig.getFactionConfig(f.getId()).pirateFaction;
+
+                    if (thisPirate != otherPirate) {
+                        faction.setRelationship(f.getId(), RepLevel.HOSTILE);
+                    }
+                }
+
+                index++;
+            }
         }
     }
 
@@ -110,7 +143,7 @@ public class RenxPlugin extends BaseModPlugin {
 
     private static void setDiplomacyTraits(NexFactionConfig config, Random rng) {
         config.diplomacyTraits.clear();
-        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("paranoid");
+        if (rng.nextFloat() < 0.12f) config.diplomacyTraits.add("paranoid");
         else if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("pacifist");
         if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("predatory");
         if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("helps_allies");
@@ -328,10 +361,10 @@ public class RenxPlugin extends BaseModPlugin {
 
     private static void setNameAndColor(FactionSpecAPI spec, int[] color, Random rng) {
         spec.setColor(new Color(color[0], color[1], color[2]));
-        spec.setBaseUIColor(new Color(color[0], color[1], color[2]));
-        spec.setBrightUIColor(new Color(color[0], color[1], color[2]).brighter());
-        spec.setDarkUIColor(new Color(color[0], color[1], color[2]).darker());
-        spec.setGridUIColor(new Color(color[0], color[1], color[2]));
+        spec.setBaseUIColor(new Color(color[0], color[1], color[2]).darker());
+        spec.setBrightUIColor(new Color(color[0], color[1], color[2]));
+        spec.setDarkUIColor(new Color(color[0], color[1], color[2]).darker().darker());
+        spec.setGridUIColor(new Color(color[0], color[1], color[2]).darker());
         spec.setSecondaryUIColor(new Color(color[0], color[1], color[2]));
         String colorStr = String.format("%02X%02X%02X", color[0], color[1], color[2]);
         spec.setCrest("graphics/factions/renx_crest_" + colorStr + ".png");
