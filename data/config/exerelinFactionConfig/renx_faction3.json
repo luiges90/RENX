@@ -3,6 +3,7 @@
   "corvusCompatible": false,
   "rebelFleetSuffix": "Rebel Fleet",
   "directoryUseShortName": true,
+  "ngcTooltip": "This will be filled by a randomly generated faction by RENX once game starts.",
   "marketSpawnWeight": 1,
   "startRelationships": {},
   "maxRelationships": {},

@@ -34,17 +34,17 @@ public class WordGenerator {
         boolean noPrefix1 = random.nextFloat() < 0.2f;
         if (!noPrefix1)
         {
-            prefix1 = Util.from(random, ConsonantPrefix);
+            prefix1 = Util.randomFrom(random, ConsonantPrefix);
         }
         else
         {
             prefix1 = "";
         }
 
-        vowel1 = Util.from(random, Vowels);
+        vowel1 = Util.randomFrom(random, Vowels);
         if (noPrefix1 || random.nextFloat() < 0.8f)
         {
-            suffix1 = Util.from(random, ConsonantSuffix);
+            suffix1 = Util.randomFrom(random, ConsonantSuffix);
         }
         else
         {
@@ -57,17 +57,17 @@ public class WordGenerator {
             boolean noPrefix2 = random.nextFloat() < 0.2f;
             if (!noPrefix2)
             {
-                prefix2 = Util.from(random, ConsonantPrefix);
+                prefix2 = Util.randomFrom(random, ConsonantPrefix);
             }
             else
             {
                 prefix2 = "";
             }
 
-            vowel2 = Util.from(random, Vowels);
+            vowel2 = Util.randomFrom(random, Vowels);
             if (noPrefix2 || random.nextFloat() < 0.8f)
             {
-                suffix2 = Util.from(random, ConsonantSuffix);
+                suffix2 = Util.randomFrom(random, ConsonantSuffix);
             }
             else
             {

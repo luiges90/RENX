@@ -6,7 +6,6 @@ import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,7 +39,7 @@ public class Util {
         return titleCase.toString();
     }
 
-    public static <T> T from(Random random, T[] array) {
+    public static <T> T randomFrom(Random random, T[] array) {
         return array[random.nextInt(array.length)];
     }
 

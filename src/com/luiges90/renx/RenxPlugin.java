@@ -12,13 +12,13 @@ import com.fs.starfarer.api.combat.MutableStat;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
+import org.json.JSONException;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 public class RenxPlugin extends BaseModPlugin {
-    public static final long SEED = 473208952;
     public static final int[] COLOR_VALUES = {0, 85, 170, 255};
 
     @Override
@@ -35,6 +35,7 @@ public class RenxPlugin extends BaseModPlugin {
 
             FactionAPI faction = Global.getSector().getFaction("renx_faction" + index);
 
+            // If color selection changed, synchronize with FlagGenerator
             int[] color = new int[] {
                     COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
                     COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
@@ -66,7 +67,7 @@ public class RenxPlugin extends BaseModPlugin {
                         }
                     }
                 }
-                String name2 = Util.from(rng, POLITIES);
+                String name2 = Util.randomFrom(rng, POLITIES);
                 setName(spec, name, name2);
 
                 MemoryAPI memory = faction.getMemoryWithoutUpdate();
@@ -76,8 +77,33 @@ public class RenxPlugin extends BaseModPlugin {
                 setName(spec, faction.getMemoryWithoutUpdate().getString("$renx_faction_name"), faction.getMemoryWithoutUpdate().getString("$renx_faction_name2"));
             }
 
+            Integer[] nameWeight = new Integer[]{0, 0, 0, 0, 1, 1, 2, 3};
+            for (int i = 0; i < spec.getNameCategories().getItems().size(); ++i) {
+                spec.getNameCategories().setWeight(i, Util.randomFrom(rng, nameWeight));
+            }
+            for (int i = 0; i < spec.getShipNameSources().getItems().size(); ++i) {
+                spec.getShipNameSources().setWeight(i, Util.randomFrom(rng, nameWeight));
+            }
+            nameWeight = new Integer[]{0, 0, 1, 1, 2};
+            for (int i = 0; i < spec.getVoicePickerLow().getItems().size(); ++i) {
+                spec.getVoicePickerLow().setWeight(i, Util.randomFrom(rng, nameWeight));
+            }
+            for (int i = 0; i < spec.getVoicePickerMedium().getItems().size(); ++i) {
+                spec.getVoicePickerMedium().setWeight(i, Util.randomFrom(rng, nameWeight));
+            }
+            for (int i = 0; i < spec.getVoicePickerHigh().getItems().size(); ++i) {
+                spec.getVoicePickerHigh().setWeight(i, Util.randomFrom(rng, nameWeight));
+            }
+
+            try {
+                spec.getCustom().put("AICoreValueMult", rng.nextInt(4) * 0.5f + 0.5f);
+                spec.getCustom().put("AICoreRepMult", rng.nextInt(4) * 0.5f + 0.5f);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             String[] hullTags = new String[]{"lowtech_bp", "midline_bp", "hightech_bp", "pirate_bp"};
-            String hullTag = Util.from(rng, hullTags);
+            String hullTag = Util.randomFrom(rng, hullTags);
             addHulls(faction, hullTag, rng);
             addFighters(faction, hullTag, rng);
             addWeapons(faction, hullTag, rng);
@@ -86,12 +112,25 @@ public class RenxPlugin extends BaseModPlugin {
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
             config.pirateFaction = rng.nextFloat() < 0.2f;
+            config.hostileToAll = config.pirateFaction ? 2 : 0;
             setDiplomacyTraits(config, rng);
             config.freeMarket = config.diplomacyTraits.contains("anarchist");
-
+            config.morality = Util.randomFrom(rng, NexFactionConfig.Morality.values());
             if (!config.freeMarket) {
                 setIllegalCommodities(faction, rng);
             }
+
+            config.groundBattleSettings.put("attackMult", rng.nextFloat() * 0.4f + 0.8f);
+            config.groundBattleSettings.put("defenseMult", rng.nextFloat() * 0.4f + 0.8f);
+            config.groundBattleSettings.put("moraleDamageTakenMult", rng.nextFloat() * 0.4f + 0.8f);
+            config.invasionFleetSizeMod = rng.nextFloat() * 0.4f + 0.8f;
+            config.responseFleetSizeMod = rng.nextFloat() * 0.4f + 0.8f;
+            config.invasionPointMult = rng.nextFloat() * 0.4f + 0.8f;
+
+            config.colonyExpeditionChance = rng.nextFloat() * 0.4f + 0.8f;
+            config.specialForcesPointMult = rng.nextFloat() * 0.4f + 0.8f;
+            config.specialForcesSizeMult = rng.nextFloat() * 0.4f + 0.8f;
+            config.vengeanceFleetSizeMult = rng.nextFloat() * 0.4f + 0.8f;
 
             setDefenceStations(config, hullTag, rng);
             setBonusSeeds(config, rng);
@@ -111,6 +150,28 @@ public class RenxPlugin extends BaseModPlugin {
             index++;
         }
 
+        for (int i = 0; i < index; ++i) {
+            NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
+
+            for (int j = 0; j < index; ++j) {
+                if (i == j) continue;
+
+                if (rng.nextFloat() < 0.2f) {
+                    int degree = rng.nextInt(4);
+                    config.startRelationships.put("renx_faction" + j, degree * 0.2f + 0.1f);
+                    config.minRelationships.put("renx_faction" + j, degree * 0.25f - 1f);
+                    config.diplomacyPositiveChance.put("renx_faction" + j, rng.nextFloat() * 0.4f + 0.8f + degree * 0.2f);
+                    config.diplomacyNegativeChance.put("renx_faction" + j, rng.nextFloat() * 0.4f + 0.8f - degree * 0.1f);
+                } else if (rng.nextFloat() < 0.25f) {
+                    int degree = rng.nextInt(4);
+                    config.startRelationships.put("renx_faction" + j, -degree * 0.2f - 0.1f);
+                    config.maxRelationships.put("renx_faction" + j, 1 - degree * 0.25f);
+                    config.diplomacyPositiveChance.put("renx_faction" + j, rng.nextFloat() * 0.4f + 0.8f - degree * 0.1f);
+                    config.diplomacyNegativeChance.put("renx_faction" + j, rng.nextFloat() * 0.4f + 0.8f + degree * 0.2f);
+                }
+            }
+        }
+
         if (newGame) {
             index = 0;
             while (true) {
@@ -124,8 +185,8 @@ public class RenxPlugin extends BaseModPlugin {
                 for (FactionAPI f : allFactions) {
                     boolean otherPirate = NexConfig.getFactionConfig(f.getId()).pirateFaction;
 
-                    if (thisPirate != otherPirate) {
-                        faction.setRelationship(f.getId(), RepLevel.HOSTILE);
+                    if (thisPirate != otherPirate && faction.getRelationship(f.getId()) == 0) {
+                        faction.setRelationship(f.getId(), -0.6f);
                     }
                 }
 
@@ -176,7 +237,7 @@ public class RenxPlugin extends BaseModPlugin {
 
     private static void setDiplomacyTraits(NexFactionConfig config, Random rng) {
         config.diplomacyTraits.clear();
-        if (rng.nextFloat() < 0.12f) config.diplomacyTraits.add("paranoid");
+        if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("paranoid");
         else if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("pacifist");
         if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("predatory");
         if (rng.nextFloat() < 0.15f) config.diplomacyTraits.add("helps_allies");
@@ -341,7 +402,7 @@ public class RenxPlugin extends BaseModPlugin {
                 "mjolnir", "multineedler"
         };
         for (String weapon : allWeaponList) {
-            if (rng.nextFloat() < 0.05f) {
+            if (rng.nextFloat() < 0.1f) {
                 faction.addKnownWeapon(weapon, true);
             }
         }
@@ -386,7 +447,7 @@ public class RenxPlugin extends BaseModPlugin {
             }
         }
         for (String fighter : allFighterList) {
-            if (rng.nextFloat() < 0.05f) {
+            if (rng.nextFloat() < 0.1f) {
                 faction.addKnownFighter(fighter, true);
             }
         }
@@ -426,15 +487,10 @@ public class RenxPlugin extends BaseModPlugin {
                 break;
             case "pirate_bp":
                 hullList = new String[]{
-                        "vanguard_pirates", "manticore_pirates", "falcon_p", "eradicator_pirates", "atlas2"
-                };
-                break;
-            case "LP_bp":
-                hullList = new String[] {
+                        "vanguard_pirates", "manticore_pirates", "falcon_p", "eradicator_pirates", "atlas2",
                         "manticore_luddic_path", "venture_pather", "prometheus2"
                 };
                 break;
-
             default:
                 hullList = new String[]{};
                 break;
