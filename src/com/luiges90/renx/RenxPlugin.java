@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionDoctrineAPI;
 import com.fs.starfarer.api.campaign.FactionSpecAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
 import exerelin.campaign.alliances.Alliance;
@@ -13,10 +14,8 @@ import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 public class RenxPlugin extends BaseModPlugin {
     public static final long SEED = 473208952;
@@ -34,31 +33,65 @@ public class RenxPlugin extends BaseModPlugin {
             FactionSpecAPI spec = Global.getSettings().getFactionSpec("renx_faction" + index);
             if (spec == null) break;
 
+            FactionAPI faction = Global.getSector().getFaction("renx_faction" + index);
+
             int[] color = new int[] {
                     COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
                     COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
                     COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)]
             };
             if (color[0] + color[1] + color[2] <= 100) continue;
+            setColor(spec, color);
 
-            setNameAndColor(spec, color, rng);
+            if (newGame) {
+                List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+                Map<FactionSpecAPI, List<MarketAPI>> factionMarkets = new HashMap<>();
+                for (MarketAPI market : markets) {
+                    FactionSpecAPI marketFaction = market.getFaction().getFactionSpec();
+                    if (factionMarkets.containsKey(marketFaction)) {
+                        factionMarkets.get(marketFaction).add(market);
+                    } else {
+                        factionMarkets.put(marketFaction, new ArrayList<>(Collections.singletonList(market)));
+                    }
+                }
+                String name = spec.getId();
+                for (List<MarketAPI> factionMarketsList : factionMarkets.values()) {
+                    MarketAPI largestMarket;
+                    int size = 0;
+                    for (MarketAPI market : factionMarketsList) {
+                        if (market.getSize() > size) {
+                            size = market.getSize();
+                            largestMarket = market;
+                            name = largestMarket.getName();
+                        }
+                    }
+                }
+                String name2 = Util.from(rng, POLITIES);
+                setName(spec, name, name2);
 
-            FactionAPI faction = Global.getSector().getFaction("renx_faction" + index);
+                MemoryAPI memory = faction.getMemoryWithoutUpdate();
+                memory.set("$renx_faction_name", name);
+                memory.set("$renx_faction_name2", name2);
+            } else {
+                setName(spec, faction.getMemoryWithoutUpdate().getString("$renx_faction_name"), faction.getMemoryWithoutUpdate().getString("$renx_faction_name2"));
+            }
 
             String[] hullTags = new String[]{"lowtech_bp", "midline_bp", "hightech_bp", "pirate_bp"};
             String hullTag = Util.from(rng, hullTags);
-            addHulls(faction, hullTag);
-            addFighters(faction, hullTag);
-            addWeapons(faction, hullTag);
+            addHulls(faction, hullTag, rng);
+            addFighters(faction, hullTag, rng);
+            addWeapons(faction, hullTag, rng);
 
             setDoctrine(faction, rng, hullTag);
-            setIllegalCommodities(faction, rng);
-
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
             config.pirateFaction = rng.nextFloat() < 0.2f;
             setDiplomacyTraits(config, rng);
             config.freeMarket = config.diplomacyTraits.contains("anarchist");
+
+            if (!config.freeMarket) {
+                setIllegalCommodities(faction, rng);
+            }
 
             setDefenceStations(config, hullTag, rng);
             setBonusSeeds(config, rng);
@@ -218,23 +251,21 @@ public class RenxPlugin extends BaseModPlugin {
         doctrine.setCommanderSkillsShuffleProbability(rng.nextFloat());
     }
 
-    private static void addWeapons(FactionAPI faction, String hullTag) {
+    private static void addWeapons(FactionAPI faction, String hullTag, Random rng) {
         List<String> baseWeapons = Util.getAllWeaponsWithTag("base_bp");
         for (String baseWeapon : baseWeapons) {
             faction.addKnownWeapon(baseWeapon, true);
         }
         List<String> baseTechWeapons = Util.getAllWeaponsWithTag(hullTag);
         for (String baseWeapon : baseTechWeapons) {
-            faction.addKnownWeapon(baseWeapon, true);
+            if (rng.nextFloat() < 0.9f) {
+                faction.addKnownWeapon(baseWeapon, true);
+            }
         }
         List<String> missileWeapons = Util.getAllWeaponsWithTag("missile_bp");
         for (String missileWeapon : missileWeapons) {
-            faction.addKnownWeapon(missileWeapon, true);
-        }
-        if (hullTag.equals("pirates")) {
-            List<String> pirateWeapons = Util.getAllWeaponsWithTag("pirate_bp");
-            for (String pirateWeapon : pirateWeapons) {
-                faction.addKnownWeapon(pirateWeapon, true);
+            if (rng.nextFloat() < 0.9f) {
+                faction.addKnownWeapon(missileWeapon, true);
             }
         }
         String[] weaponList;
@@ -280,14 +311,48 @@ public class RenxPlugin extends BaseModPlugin {
                 break;
         }
         for (String weapon : weaponList) {
-            faction.addKnownWeapon(weapon, true);
+            if (rng.nextFloat() < 0.8f) {
+                faction.addKnownWeapon(weapon, true);
+            }
+        }
+
+        String[] allWeaponList = new String[]{
+                "lightmg", "lightdualmg", "vulcan", "lightac", "lightdualac", "lightag", "lightneedler", "railgun",
+                "heavymortar", "chaingun", "heavyac", "hveldriver", "heavymauler", "heavyneedler", "flak", "dualflak",
+                "gauss", "hephag", "mark9", "devastator", "multineedler", "reaper", "atropos", "atropos_single", "swarmer",
+                "annihilator", "heatseeker", "harpoon", "harpoon_single", "breach", "sabot", "sabot_single", "pilum",
+                "breachpod", "harpoonpod", "sabotpod", "phasecl", "typhoon", "cyclone", "hurricane", "squall", "locust",
+                "taclaser", "pdlaser", "lrpdlaser", "ioncannon", "gravitonbeam", "pulselaser", "phasebeam", "shredder",
+                "heavymortar", "arbalest", "hellbore", "hammer", "hammer_single", "jackhammer", "salamanderpod",
+                "annihilatorpod", "pilum_large", "hammerrack", "mininglaser", "miningblaster",
+                "gorgon", "gorgonpod", "gazer", "gazerpod", "dragon", "dragonpod", "hydra", "lightmg", "lightdualmg",
+                "lightac", "lightdualac", "lightag", "heavymg", "flak", "heavymauler", "heavyac", "mjolnir", "pdburst",
+                "pdlaser", "lrpdlaser", "taclaser", "ioncannon", "phasebeam", "gravitonbeam", "irautolance", "heavyburst",
+                "ionbeam", "guardian", "hil", "vulcan", "railgun", "heavymortar", "chaingun", "dualflak", "hephag", "mark9",
+                "devastator", "reaper", "atropos", "atropos_single", "swarmer", "annihilator", "heatseeker", "harpoon",
+                "harpoon_single", "breach", "sabot", "sabot_single", "pilum", "breachpod", "harpoonpod", "sabotpod",
+                "phasecl", "typhoon", "squall", "locust", "irpulse", "pulselaser", "autopulse",
+                "pdlaser", "taclaser", "ioncannon", "irpulse", "lrpdlaser", "pdburst", "amblaster", "phasebeam",
+                "gravitonbeam", "pulselaser", "heavyblaster", "heavyburst", "ionpulser", "ionbeam", "plasma",
+                "hil", "autopulse", "guardian", "tachyonlance", "reaper", "atropos", "atropos_single", "swarmer",
+                "annihilator", "heatseeker", "harpoon", "harpoon_single", "breach", "sabot", "sabot_single",
+                "harpoonpod", "breachpod", "sabotpod", "salamanderpod", "phasecl", "typhoon", "cyclone",
+                "hurricane", "squall", "locust", "railgun", "lightneedler", "hveldriver", "heavyneedler",
+                "mjolnir", "multineedler"
+        };
+        for (String weapon : allWeaponList) {
+            if (rng.nextFloat() < 0.05f) {
+                faction.addKnownWeapon(weapon, true);
+            }
         }
     }
 
-    private static void addFighters(FactionAPI faction, String hullTag) {
+    private static void addFighters(FactionAPI faction, String hullTag, Random rng) {
         List<String> baseFighters = Util.getAllFightersWithTag(hullTag);
         for (String baseFighter : baseFighters) {
-            faction.addKnownFighter(baseFighter, true);
+            if (rng.nextFloat() < 0.9f) {
+                faction.addKnownFighter(baseFighter, true);
+            }
         }
         String[] fighterList;
         switch (hullTag) {
@@ -310,19 +375,33 @@ public class RenxPlugin extends BaseModPlugin {
                 fighterList = new String[]{};
                 break;
         }
+        String[] allFighterList = new String[]{
+                "talon_wing", "broadsword_wing", "warthog_wing", "piranha_wing", "hoplon_wing", "longbow_wing", "perdition_wing",
+                "thunder_wing", "gladius_wing", "talon_wing", "claw_wing",
+                "broadsword_wing", "dagger_wing", "trident_wing", "wasp_wing", "xyphos_wing", "claw_wing", "trident_wing", "cobra_wing", "longbow_wing"
+        };
         for (String fighter : fighterList) {
-            faction.addKnownFighter(fighter, true);
+            if (rng.nextFloat() < 0.8f) {
+                faction.addKnownFighter(fighter, true);
+            }
+        }
+        for (String fighter : allFighterList) {
+            if (rng.nextFloat() < 0.05f) {
+                faction.addKnownFighter(fighter, true);
+            }
         }
     }
 
-    private static String addHulls(FactionAPI faction, String hullTag) {
+    private static void addHulls(FactionAPI faction, String hullTag, Random rng) {
         List<String> baseHulls = Util.getAllBaseHullsWithTag("base_bp");
         for (String baseHull : baseHulls) {
             faction.addKnownShip(baseHull, true);
         }
         List<String> baseTechHulls = Util.getAllBaseHullsWithTag(hullTag);
         for (String baseHull : baseTechHulls) {
-            faction.addKnownShip(baseHull, true);
+            if (rng.nextFloat() < 0.9f) {
+                faction.addKnownShip(baseHull, true);
+            }
         }
         faction.addKnownShip("valkyrie", true);
         faction.addKnownShip("prometheus", true);
@@ -347,30 +426,54 @@ public class RenxPlugin extends BaseModPlugin {
                 break;
             case "pirate_bp":
                 hullList = new String[]{
-                        "vanguard_pirates", "manticore_pirates", "falcon_p", "eradicator_pirates", "atlas2"};
+                        "vanguard_pirates", "manticore_pirates", "falcon_p", "eradicator_pirates", "atlas2"
+                };
                 break;
+            case "LP_bp":
+                hullList = new String[] {
+                        "manticore_luddic_path", "venture_pather", "prometheus2"
+                };
+                break;
+
             default:
                 hullList = new String[]{};
                 break;
         }
+        String[] allHullList = new String[]{
+                "manticore", "eradicator", "onslaught", "retribution", "legion", "invictus",
+                "monitor", "eagle", "champion", "gryphon", "conquest", "pegasus",
+                "omen", "tempest", "hyperion", "scarab", "medusa", "apogee", "aurora", "astral", "odyssey", "paragon",
+                "shade", "afflictor", "harbinger", "doom", "phantom", "revenant",
+                "vanguard_pirates", "manticore_pirates", "falcon_p", "eradicator_pirates", "atlas2",
+                "manticore_luddic_path", "venture_pather", "prometheus2"
+        };
         for (String hull : hullList) {
-            faction.addKnownShip(hull, true);
+            if (rng.nextFloat() < 0.8f) {
+                faction.addKnownShip(hull, true);
+            }
         }
-        return hullTag;
+        for (String hull : allHullList) {
+            if (rng.nextFloat() < 0.05f) {
+                faction.addKnownShip(hull, true);
+            }
+        }
     }
 
-    private static void setNameAndColor(FactionSpecAPI spec, int[] color, Random rng) {
+    private static void setColor(FactionSpecAPI spec, int[] color) {
         spec.setColor(new Color(color[0], color[1], color[2]));
-        spec.setBaseUIColor(new Color(color[0], color[1], color[2]).darker());
-        spec.setBrightUIColor(new Color(color[0], color[1], color[2]));
+        spec.setBaseUIColor(new Color(color[0], color[1], color[2]).darker().darker());
+        spec.setBrightUIColor(new Color(color[0], color[1], color[2]).brighter());
         spec.setDarkUIColor(new Color(color[0], color[1], color[2]).darker().darker());
-        spec.setGridUIColor(new Color(color[0], color[1], color[2]).darker());
+        spec.setGridUIColor(new Color(color[0], color[1], color[2]).darker().darker());
         spec.setSecondaryUIColor(new Color(color[0], color[1], color[2]));
         String colorStr = String.format("%02X%02X%02X", color[0], color[1], color[2]);
         spec.setCrest("graphics/factions/renx_crest_" + colorStr + ".png");
         spec.setLogo("graphics/factions/renx_flag_" + colorStr + ".png");
+    }
 
-        String name = Util.toTitleCase(WordGenerator.generateWord(rng));
+    private static void setName(FactionSpecAPI spec, String name1, String name2) {
+        String name = name1 + " " + name2;
+
         spec.setDisplayName(name);
         spec.setDisplayNameIsOrAre(name);
         spec.setDisplayNameWithArticle(name);
@@ -378,7 +481,18 @@ public class RenxPlugin extends BaseModPlugin {
         spec.setDisplayNameLongWithArticle(name);
         spec.setPersonNamePrefix(name);
         spec.setPersonNamePrefixAOrAn(Arrays.asList('a', 'e', 'i', 'o', 'u').contains(name.charAt(0)) ? "an" : "a");
-        spec.setShipNamePrefix(String.format("%s%sS", name.charAt(0), name.length() > 1 ? name.charAt(1) : "").toUpperCase());
+        spec.setShipNamePrefix(String.format("%s%sS", name1.charAt(0), name2.charAt(0)).toUpperCase());
+        spec.setEntityNamePrefix(name);
     }
 
+    private static final String[] POLITIES = new String[]
+    {
+            "Collective", "Association", "Coalition", "Federation", "Confederation", "Alliance",
+            "Empire", "Republic", "Union", "League", "Commonwealth", "Hegemony", "Dominion", "Diktat",
+            "Authority", "Command", "Imperium", "Navy", "Organization", "Alliance", "Starworks", "Group",
+            "Shipyards", "Industries", "Combine", "Lab", "Syndicate", "Corporation", "Manufacture", "Bureau", "Corp", "Corporation",
+            "Security", "Union", "Solutions", "Conglomerate", "Empire", "Initiative",
+            "Church", "Cult", "Path", "Order", "Clan",
+            "Stars", "Planets", "Systems",
+    };
 }
