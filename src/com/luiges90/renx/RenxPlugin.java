@@ -28,6 +28,19 @@ public class RenxPlugin extends BaseModPlugin {
         String seedStr = Global.getSector().getSeedString();
         Random rng = new Random(Long.parseLong(seedStr.substring(3)));
 
+        Map<String, List<MarketAPI>> factionMarkets = new HashMap<>();
+        if (newGame) {
+            List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+            for (MarketAPI market : markets) {
+                String marketFaction = market.getFaction().getFactionSpec().getId();
+                if (factionMarkets.containsKey(marketFaction)) {
+                    factionMarkets.get(marketFaction).add(market);
+                } else {
+                    factionMarkets.put(marketFaction, new ArrayList<>(Collections.singletonList(market)));
+                }
+            }
+        }
+
         int index = 0;
         while (true) {
             FactionSpecAPI spec = Global.getSettings().getFactionSpec("renx_faction" + index);
@@ -45,34 +58,34 @@ public class RenxPlugin extends BaseModPlugin {
             setColor(spec, color);
 
             if (newGame) {
-                List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
-                Map<FactionSpecAPI, List<MarketAPI>> factionMarkets = new HashMap<>();
-                for (MarketAPI market : markets) {
-                    FactionSpecAPI marketFaction = market.getFaction().getFactionSpec();
-                    if (factionMarkets.containsKey(marketFaction)) {
-                        factionMarkets.get(marketFaction).add(market);
-                    } else {
-                        factionMarkets.put(marketFaction, new ArrayList<>(Collections.singletonList(market)));
-                    }
-                }
                 String name = spec.getId();
-                for (List<MarketAPI> factionMarketsList : factionMarkets.values()) {
+                List<MarketAPI> markets = factionMarkets.get(faction.getId());
+
+                if (markets != null) {
                     MarketAPI largestMarket;
                     int size = 0;
-                    for (MarketAPI market : factionMarketsList) {
+                    for (MarketAPI market : markets) {
                         if (market.getSize() > size) {
                             size = market.getSize();
                             largestMarket = market;
                             name = largestMarket.getName();
                         }
                     }
-                }
-                String name2 = Util.randomFrom(rng, POLITIES);
-                setName(spec, name, name2);
 
-                MemoryAPI memory = faction.getMemoryWithoutUpdate();
-                memory.set("$renx_faction_name", name);
-                memory.set("$renx_faction_name2", name2);
+                    char last = name.charAt(name.length() - 1);
+                    if (last == 'a') {
+                        name = name + "n";
+                    } else {
+                        name = name + "an";
+                    }
+
+                    String name2 = Util.randomFrom(rng, POLITIES);
+                    setName(spec, name, name2);
+
+                    MemoryAPI memory = faction.getMemoryWithoutUpdate();
+                    memory.set("$renx_faction_name", name);
+                    memory.set("$renx_faction_name2", name2);
+                }
             } else {
                 setName(spec, faction.getMemoryWithoutUpdate().getString("$renx_faction_name"), faction.getMemoryWithoutUpdate().getString("$renx_faction_name2"));
             }
@@ -120,6 +133,7 @@ public class RenxPlugin extends BaseModPlugin {
                 setIllegalCommodities(faction, rng);
             }
 
+            config.groundBattleSettings = new HashMap<>();
             config.groundBattleSettings.put("attackMult", rng.nextFloat() * 0.4f + 0.8f);
             config.groundBattleSettings.put("defenseMult", rng.nextFloat() * 0.4f + 0.8f);
             config.groundBattleSettings.put("moraleDamageTakenMult", rng.nextFloat() * 0.4f + 0.8f);
@@ -158,13 +172,18 @@ public class RenxPlugin extends BaseModPlugin {
 
                 if (rng.nextFloat() < 0.2f) {
                     int degree = rng.nextInt(4);
-                    config.startRelationships.put("renx_faction" + j, degree * 0.2f + 0.1f);
+                    float rel = degree * 0.2f + 0.1f;
+                    config.startRelationships.put("renx_faction" + j, rel);
+                    Global.getSector().getFaction("renx_faction" + i).setRelationship("renx_faction" + j, rel);
                     config.minRelationships.put("renx_faction" + j, degree * 0.25f - 1f);
                     config.diplomacyPositiveChance.put("renx_faction" + j, rng.nextFloat() * 0.4f + 0.8f + degree * 0.2f);
                     config.diplomacyNegativeChance.put("renx_faction" + j, rng.nextFloat() * 0.4f + 0.8f - degree * 0.1f);
                 } else if (rng.nextFloat() < 0.25f) {
                     int degree = rng.nextInt(4);
-                    config.startRelationships.put("renx_faction" + j, -degree * 0.2f - 0.1f);
+                    float rel = -degree * 0.2f - 0.1f;
+                    config.startRelationships.put("renx_faction" + j, rel);
+                    Global.getSector().getFaction("renx_faction" + i).setRelationship("renx_faction" + j, rel);
+                    config.startRelationships.put("renx_faction" + j, rel);
                     config.maxRelationships.put("renx_faction" + j, 1 - degree * 0.25f);
                     config.diplomacyPositiveChance.put("renx_faction" + j, rng.nextFloat() * 0.4f + 0.8f - degree * 0.1f);
                     config.diplomacyNegativeChance.put("renx_faction" + j, rng.nextFloat() * 0.4f + 0.8f + degree * 0.2f);
@@ -530,15 +549,15 @@ public class RenxPlugin extends BaseModPlugin {
     private static void setName(FactionSpecAPI spec, String name1, String name2) {
         String name = name1 + " " + name2;
 
-        spec.setDisplayName(name);
-        spec.setDisplayNameIsOrAre(name);
-        spec.setDisplayNameWithArticle(name);
+        spec.setDisplayName(name1);
+        spec.setDisplayNameIsOrAre(name1);
+        spec.setDisplayNameWithArticle(name1);
         spec.setDisplayNameLong(name);
         spec.setDisplayNameLongWithArticle(name);
-        spec.setPersonNamePrefix(name);
+        spec.setPersonNamePrefix(name1);
         spec.setPersonNamePrefixAOrAn(Arrays.asList('a', 'e', 'i', 'o', 'u').contains(name.charAt(0)) ? "an" : "a");
         spec.setShipNamePrefix(String.format("%s%sS", name1.charAt(0), name2.charAt(0)).toUpperCase());
-        spec.setEntityNamePrefix(name);
+        spec.setEntityNamePrefix(name1);
     }
 
     private static final String[] POLITIES = new String[]
