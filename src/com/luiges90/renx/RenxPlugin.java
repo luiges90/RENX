@@ -75,6 +75,8 @@ public class RenxPlugin extends BaseModPlugin {
                     char last = name.charAt(name.length() - 1);
                     if (last == 'a') {
                         name = name + "n";
+                    } else if (last == 'n') {
+                        name = name + "ese";
                     } else {
                         name = name + "an";
                     }
