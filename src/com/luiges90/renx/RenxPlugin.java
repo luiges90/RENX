@@ -193,6 +193,36 @@ public class RenxPlugin extends BaseModPlugin {
             }
         }
 
+        for (FactionAPI faction: Global.getSector().getAllFactions()) {
+            NexFactionConfig config = NexConfig.getFactionConfig(faction.getId());
+            if (config.pirateFaction) {
+                if (config.groundBattleSettings == null) {
+                    config.groundBattleSettings = new HashMap<>();
+                    config.groundBattleSettings.put("defenseMult", 2f);
+                }
+                else if (!config.groundBattleSettings.containsKey("defenseMult"))
+                {
+                    config.groundBattleSettings.put("defenseMult", 2f);
+                }
+                else
+                {
+                    config.groundBattleSettings.put("defenseMult", (float) config.groundBattleSettings.get("defenseMult") * 2f);
+                }
+                config.responseFleetSizeMod = config.responseFleetSizeMod * 1.5f;
+            }
+
+            List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+            for (MarketAPI market : markets) {
+                String marketFaction = market.getFaction().getFactionSpec().getId();
+                boolean isPirate = NexConfig.getFactionConfig(marketFaction).pirateFaction;
+
+                if (isPirate) {
+                    MarketAPI mutMarket = Global.getSector().getEconomy().getMarket(market.getId());
+                    mutMarket.getAccessibilityMod().modifyFlat("renx_pirate_access_buff", 0.5f);
+                }
+            }
+        }
+
         if (newGame) {
             index = 0;
             while (true) {
