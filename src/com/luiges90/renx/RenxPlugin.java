@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionDoctrineAPI;
 import com.fs.starfarer.api.campaign.FactionSpecAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -230,8 +231,25 @@ public class RenxPlugin extends BaseModPlugin {
         List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
         for (MarketAPI market : markets) {
             MarketAPI mutMarket = Global.getSector().getEconomy().getMarket(market.getId());
-            mutMarket.getConstructionQueue().addToEnd("patrolhq", 30);
-            mutMarket.getConstructionQueue().addToEnd("grounddefenses", 30);
+
+            List<Industry> industries = mutMarket.getIndustries();
+            boolean hasGroundDefenses = false;
+            boolean hasPatrolHQ = false;
+            for (Industry industry : industries) {
+                if (industry.getSpec().getTags().contains("grounddefenses")) {
+                    hasGroundDefenses = true;
+                }
+                if (industry.getSpec().getTags().contains("patrol") || industry.getSpec().getTags().contains("military") || industry.getSpec().getTags().contains("command")) {
+                    hasPatrolHQ = true;
+                }
+            }
+
+            if (!hasGroundDefenses) {
+                mutMarket.getConstructionQueue().addToEnd("grounddefenses", 30);
+            }
+            if (!hasPatrolHQ) {
+                mutMarket.getConstructionQueue().addToEnd("patrolhq", 30);
+            }
         }
     }
 
