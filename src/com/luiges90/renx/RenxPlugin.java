@@ -5,7 +5,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FactionDoctrineAPI;
 import com.fs.starfarer.api.campaign.FactionSpecAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
@@ -126,27 +125,7 @@ public class RenxPlugin extends BaseModPlugin {
             setDoctrine(faction, rng, hullTag);
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
-            config.pirateFaction = rng.nextFloat() < 0.2f;
-            config.hostileToAll = config.pirateFaction ? 2 : 0;
-            setDiplomacyTraits(config, rng);
-            config.freeMarket = config.diplomacyTraits.contains("anarchist");
-            config.morality = Util.randomFrom(rng, NexFactionConfig.Morality.values());
-            if (!config.freeMarket) {
-                setIllegalCommodities(faction, rng);
-            }
-
-            config.groundBattleSettings = new HashMap<>();
-            config.groundBattleSettings.put("attackMult", rng.nextFloat() * 0.4f + 0.8f);
-            config.groundBattleSettings.put("defenseMult", rng.nextFloat() * 0.4f + 0.8f);
-            config.groundBattleSettings.put("moraleDamageTakenMult", rng.nextFloat() * 0.4f + 0.8f);
-            config.invasionFleetSizeMod = rng.nextFloat() * 0.4f + 0.8f;
-            config.responseFleetSizeMod = rng.nextFloat() * 0.4f + 0.8f;
-            config.invasionPointMult = rng.nextFloat() * 0.4f + 0.8f;
-
-            config.colonyExpeditionChance = rng.nextFloat() * 0.4f + 0.8f;
-            config.specialForcesPointMult = rng.nextFloat() * 0.4f + 0.8f;
-            config.specialForcesSizeMult = rng.nextFloat() * 0.4f + 0.8f;
-            config.vengeanceFleetSizeMult = rng.nextFloat() * 0.4f + 0.8f;
+            setNexFactionValues(config, rng, faction);
 
             setDefenceStations(config, hullTag, rng);
             setBonusSeeds(config, rng);
@@ -154,18 +133,88 @@ public class RenxPlugin extends BaseModPlugin {
             setAlignments(config, rng, index);
 
             if (config.pirateFaction) {
-                spec.getMusicMap().put("theme", "music_pirates_market_neutral");
-                spec.getMusicMap().put("market_neutral", "music_pirates_market_neutral");
-                spec.getMusicMap().put("market_hostile", "music_pirates_market_hostile");
-                spec.getMusicMap().put("market_friendly", "music_pirates_market_friendly");
-                spec.getMusicMap().put("encounter_neutral", "music_pirates_encounter_neutral");
-                spec.getMusicMap().put("encounter_hostile", "music_pirates_encounter_hostile");
-                spec.getMusicMap().put("encounter_friendly", "music_pirates_encounter_friendly");
+                setPirateMusic(spec);
             }
 
             index++;
         }
 
+        setNextDiplomaticValues(index, rng);
+
+        buffPirates();
+
+        if (newGame) {
+            setInitialPirateRelations();
+        }
+
+        Global.getSector().addScript(new DiplomaticRelationScript());
+    }
+
+    private static void setInitialPirateRelations() {
+        int index;
+        index = 0;
+        while (true) {
+            FactionAPI faction = Global.getSector().getFaction("renx_faction" + index);
+            if (faction == null) break;
+
+            NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
+            boolean thisPirate = config.pirateFaction;
+
+            List<FactionAPI> allFactions = Global.getSector().getAllFactions();
+            for (FactionAPI f : allFactions) {
+                boolean otherPirate = NexConfig.getFactionConfig(f.getId()).pirateFaction;
+
+                if (thisPirate != otherPirate && faction.getRelationship(f.getId()) == 0) {
+                    faction.setRelationship(f.getId(), -0.6f);
+                }
+            }
+
+            index++;
+        }
+    }
+
+    private static void buffPirates() {
+        for (FactionAPI faction: Global.getSector().getAllFactions()) {
+            NexFactionConfig config = NexConfig.getFactionConfig(faction.getId());
+            if (config.pirateFaction) {
+                if (config.groundBattleSettings == null) {
+                    config.groundBattleSettings = new HashMap<>();
+                    config.groundBattleSettings.put("defenseMult", 2f);
+                }
+                else if (!config.groundBattleSettings.containsKey("defenseMult"))
+                {
+                    config.groundBattleSettings.put("defenseMult", 2f);
+                }
+                else
+                {
+                    config.groundBattleSettings.put("defenseMult", (float) config.groundBattleSettings.get("defenseMult") * 2f);
+                }
+            }
+
+            List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+            for (MarketAPI market : markets) {
+                String marketFaction = market.getFaction().getFactionSpec().getId();
+                boolean isPirate = NexConfig.getFactionConfig(marketFaction).pirateFaction;
+
+                if (isPirate) {
+                    MarketAPI mutMarket = Global.getSector().getEconomy().getMarket(market.getId());
+                    mutMarket.getAccessibilityMod().modifyFlat("renx_pirate_access_buff", 0.5f);
+                }
+            }
+        }
+    }
+
+    private static void setPirateMusic(FactionSpecAPI spec) {
+        spec.getMusicMap().put("theme", "music_pirates_market_neutral");
+        spec.getMusicMap().put("market_neutral", "music_pirates_market_neutral");
+        spec.getMusicMap().put("market_hostile", "music_pirates_market_hostile");
+        spec.getMusicMap().put("market_friendly", "music_pirates_market_friendly");
+        spec.getMusicMap().put("encounter_neutral", "music_pirates_encounter_neutral");
+        spec.getMusicMap().put("encounter_hostile", "music_pirates_encounter_hostile");
+        spec.getMusicMap().put("encounter_friendly", "music_pirates_encounter_friendly");
+    }
+
+    private static void setNextDiplomaticValues(int index, Random rng) {
         for (int i = 0; i < index; ++i) {
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
@@ -192,58 +241,30 @@ public class RenxPlugin extends BaseModPlugin {
                 }
             }
         }
+    }
 
-        for (FactionAPI faction: Global.getSector().getAllFactions()) {
-            NexFactionConfig config = NexConfig.getFactionConfig(faction.getId());
-            if (config.pirateFaction) {
-                if (config.groundBattleSettings == null) {
-                    config.groundBattleSettings = new HashMap<>();
-                    config.groundBattleSettings.put("defenseMult", 2f);
-                }
-                else if (!config.groundBattleSettings.containsKey("defenseMult"))
-                {
-                    config.groundBattleSettings.put("defenseMult", 2f);
-                }
-                else
-                {
-                    config.groundBattleSettings.put("defenseMult", (float) config.groundBattleSettings.get("defenseMult") * 2f);
-                }
-                config.responseFleetSizeMod = config.responseFleetSizeMod * 1.5f;
-            }
-
-            List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
-            for (MarketAPI market : markets) {
-                String marketFaction = market.getFaction().getFactionSpec().getId();
-                boolean isPirate = NexConfig.getFactionConfig(marketFaction).pirateFaction;
-
-                if (isPirate) {
-                    MarketAPI mutMarket = Global.getSector().getEconomy().getMarket(market.getId());
-                    mutMarket.getAccessibilityMod().modifyFlat("renx_pirate_access_buff", 0.5f);
-                }
-            }
+    private static void setNexFactionValues(NexFactionConfig config, Random rng, FactionAPI faction) {
+        config.pirateFaction = rng.nextFloat() < 0.2f;
+        config.hostileToAll = config.pirateFaction ? 2 : 0;
+        setDiplomacyTraits(config, rng);
+        config.freeMarket = config.diplomacyTraits.contains("anarchist");
+        config.morality = Util.randomFrom(rng, NexFactionConfig.Morality.values());
+        if (!config.freeMarket) {
+            setIllegalCommodities(faction, rng);
         }
 
-        if (newGame) {
-            index = 0;
-            while (true) {
-                FactionAPI faction = Global.getSector().getFaction("renx_faction" + index);
-                if (faction == null) break;
+        config.groundBattleSettings = new HashMap<>();
+        config.groundBattleSettings.put("attackMult", rng.nextFloat() * 0.4f + 0.8f);
+        config.groundBattleSettings.put("defenseMult", rng.nextFloat() * 0.4f + 0.8f);
+        config.groundBattleSettings.put("moraleDamageTakenMult", rng.nextFloat() * 0.4f + 0.8f);
+        config.invasionFleetSizeMod = rng.nextFloat() * 0.4f + 0.8f;
+        config.responseFleetSizeMod = rng.nextFloat() * 0.4f + 0.8f;
+        config.invasionPointMult = rng.nextFloat() * 0.4f + 0.8f;
 
-                NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
-                boolean thisPirate = config.pirateFaction;
-
-                List<FactionAPI> allFactions = Global.getSector().getAllFactions();
-                for (FactionAPI f : allFactions) {
-                    boolean otherPirate = NexConfig.getFactionConfig(f.getId()).pirateFaction;
-
-                    if (thisPirate != otherPirate && faction.getRelationship(f.getId()) == 0) {
-                        faction.setRelationship(f.getId(), -0.6f);
-                    }
-                }
-
-                index++;
-            }
-        }
+        config.colonyExpeditionChance = rng.nextFloat() * 0.4f + 0.8f;
+        config.specialForcesPointMult = rng.nextFloat() * 0.4f + 0.8f;
+        config.specialForcesSizeMult = rng.nextFloat() * 0.4f + 0.8f;
+        config.vengeanceFleetSizeMult = rng.nextFloat() * 0.4f + 0.8f;
     }
 
     private static void setDefenceStations(NexFactionConfig config, String hullTag, Random rng) {
