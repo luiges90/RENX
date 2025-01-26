@@ -29,10 +29,9 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
 
     @Override
     public void advance(float amount) {
+        if (random.nextFloat() > 1 / Global.getSector().getClock().getSecondsPerDay() || random.nextFloat() > 1 / 30f) return;
+
         List<FactionAPI> allFactions = Global.getSector().getAllFactions();
-
-        if (random.nextFloat() > amount / 1000f || random.nextFloat() > 1 / 86400f || random.nextFloat() > 1 / 30f) return;
-
         for (FactionAPI i : allFactions) {
             for (FactionAPI j : allFactions) {
                 if (i == j) {
