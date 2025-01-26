@@ -7,10 +7,13 @@ import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class DiplomaticRelationScript extends BaseCampaignEventListener implements EveryFrameScript {
+    public static final String PERSISTENT_DATA_KEY_TIMESTAMP = "renx_diplomaticRelationScript_timestamp";
+
     public DiplomaticRelationScript() {
         super(true);
     }
@@ -29,27 +32,53 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
 
     @Override
     public void advance(float amount) {
-        if (random.nextFloat() > 1 / Global.getSector().getClock().getSecondsPerDay() || random.nextFloat() > 1 / 30f) return;
+        Object otsn = Global.getSector().getPersistentData().get(PERSISTENT_DATA_KEY_TIMESTAMP);
+        if (otsn == null) {
+            Global.getSector().getPersistentData().put("renx_diplomaticRelationScript_timestamp", Global.getSector().getClock().getDay());
+            return;
+        }
 
-        List<FactionAPI> allFactions = Global.getSector().getAllFactions();
+        int ots = (int) otsn;
+        int ts = Global.getSector().getClock().getDay();
+        if (ts == ots) return;
+
+        Global.getSector().getPersistentData().put("renx_diplomaticRelationScript_timestamp", Global.getSector().getClock().getDay());
+
+        if (random.nextFloat() > 1 / 30f) return;
+
+        List<FactionAPI> allAllFactions = Global.getSector().getAllFactions();
+        List<FactionAPI> allFactions = new ArrayList<>();
+        for (FactionAPI faction : allAllFactions) {
+            if (faction.isNeutralFaction() || !faction.isShowInIntelTab()) {
+                continue;
+            }
+
+            allFactions.add(faction);
+        }
+
         for (FactionAPI i : allFactions) {
             for (FactionAPI j : allFactions) {
                 if (i == j) {
                     continue;
                 }
 
-                if (i.getRelationship(j.getId()) < 0) {
+                if (i.getRelationship(j.getId()) < -0.1f) {
                     for (FactionAPI k : allFactions) {
                         if (k == i || k == j) {
                             continue;
                         }
 
                         if (j.getRelationship(k.getId()) > 0.1f && random.nextFloat() < 0.25f) {
-                            float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId())) * 0.05f;
+                            float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId())) * 0.05f * (random.nextFloat() + 0.5f);
                             i.adjustRelationship(k.getId(), delta);
 
-                            CoreReputationPlugin.addAdjustmentMessage(delta, i, null, null, null, null, true, 0f, "Change caused by friendly relation with " + j.getDisplayName());
+                            String logStr = "DiplomaticRelationScript: " + i.getDisplayName() + " - " + j.getDisplayName() + " rel: " + i.getRelationship(j.getId()) + "; " +
+                                    j.getDisplayName() + " - " + k.getDisplayName() + " rel: " + j.getRelationship(k.getId()) + "; " +
+                                    i.getDisplayName() + " - " + k.getDisplayName() + " rel adjusted: " + delta;
+                            Global.getLogger(DiplomaticRelationScript.class).info(logStr);
+
                             if ("player".equals(i.getId()) || "player".equals(k.getId())) {
+                                CoreReputationPlugin.addAdjustmentMessage(delta, i, null, null, null, null, true, 0f, "Change caused by friendly relation with " + j.getDisplayName());
                                 Global.getSoundPlayer().playUISound("ui_rep_drop", 0.85f, 0.5f);
                             }
                         }
