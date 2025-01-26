@@ -191,15 +191,21 @@ public class RenxPlugin extends BaseModPlugin {
             if (config.pirateFaction) {
                 if (config.groundBattleSettings == null) {
                     config.groundBattleSettings = new HashMap<>();
-                    config.groundBattleSettings.put("defenseMult", 2f);
+                    config.groundBattleSettings.put("defenseMult", 1.5f);
+                    config.groundBattleSettings.put("moraleDamageTakenMult", 0.75f);
                 }
-                else if (!config.groundBattleSettings.containsKey("defenseMult"))
-                {
-                    config.groundBattleSettings.put("defenseMult", 2f);
-                }
-                else
-                {
-                    config.groundBattleSettings.put("defenseMult", (float) config.groundBattleSettings.get("defenseMult") * 2f);
+                else {
+                    if (!config.groundBattleSettings.containsKey("defenseMult")) {
+                        config.groundBattleSettings.put("defenseMult", 1.5f);
+                    } else {
+                        config.groundBattleSettings.put("defenseMult", (float) config.groundBattleSettings.get("defenseMult") * 1.5f);
+                    }
+
+                    if (!config.groundBattleSettings.containsKey("moraleDamageTakenMult")) {
+                        config.groundBattleSettings.put("moraleDamageTakenMult", 0.75f);
+                    } else {
+                        config.groundBattleSettings.put("moraleDamageTakenMult", (float) config.groundBattleSettings.get("defenseMult") * 0.75f);
+                    }
                 }
             }
 
