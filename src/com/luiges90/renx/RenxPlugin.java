@@ -59,7 +59,7 @@ public class RenxPlugin extends BaseModPlugin {
             selectedColors.add(new Integer[]{color[0], color[1], color[2]});
             setColor(spec, color);
 
-            setFactionName(newGame, spec, factionMarkets, faction, rng);
+            setFactionName(newGame, spec, factionMarkets, faction);
             setNameAndVoices(spec, rng);
 
             try {
@@ -122,7 +122,10 @@ public class RenxPlugin extends BaseModPlugin {
         }
     }
 
-    private static void setFactionName(boolean newGame, FactionSpecAPI spec, Map<String, List<MarketAPI>> factionMarkets, FactionAPI faction, Random rng) {
+    private static void setFactionName(boolean newGame, FactionSpecAPI spec, Map<String, List<MarketAPI>> factionMarkets, FactionAPI faction) {
+        String seedStr = Global.getSector().getSeedString();
+        Random rng = new Random(Long.parseLong(seedStr.substring(3)));
+
         if (newGame) {
             String name = spec.getId();
             List<MarketAPI> markets = factionMarkets.get(faction.getId());
