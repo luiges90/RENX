@@ -3,7 +3,7 @@
   "name": "RENX",
   "author": "luiges90 (aka pwhk)",
   "utility": false,
-  "version": { "major": 0, "minor": 0, "patch": 4 },
+  "version": { "major": 0, "minor": 0, "patch": 5 },
   "description": "",
   "gameVersion": "0.97a-RC11",
   "jars": [ "jars/renx.jar" ],

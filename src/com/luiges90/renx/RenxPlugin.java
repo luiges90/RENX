@@ -99,6 +99,10 @@ public class RenxPlugin extends BaseModPlugin {
 
         buffPirates();
 
+        if (newGame) {
+            addBasicStructures();
+        }
+
         Global.getSector().addScript(new DiplomaticRelationScript());
     }
 
@@ -219,6 +223,15 @@ public class RenxPlugin extends BaseModPlugin {
                     mutMarket.getAccessibilityMod().modifyFlat("renx_pirate_access_buff", 0.5f);
                 }
             }
+        }
+    }
+
+    private static void addBasicStructures() {
+        List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+        for (MarketAPI market : markets) {
+            MarketAPI mutMarket = Global.getSector().getEconomy().getMarket(market.getId());
+            mutMarket.getConstructionQueue().addToEnd("patrolhq", 30);
+            mutMarket.getConstructionQueue().addToEnd("grounddefenses", 30);
         }
     }
 
