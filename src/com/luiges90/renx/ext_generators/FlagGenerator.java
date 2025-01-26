@@ -15,7 +15,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 public class FlagGenerator {
-    public static final int[] COLOR_VALUES = {0, 85, 170, 255};
+    public static final int[] COLOR_VALUES = {0, 64, 128, 192, 255};
 
     public static void main(String[] args) {
         Util.deleteFileInDirectory("graphics/factions");

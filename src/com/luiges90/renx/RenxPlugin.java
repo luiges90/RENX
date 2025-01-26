@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.List;
 
 public class RenxPlugin extends BaseModPlugin {
-    public static final int[] COLOR_VALUES = {0, 85, 170, 255};
+    public static final int[] COLOR_VALUES = {0, 64, 128, 192, 255};
 
     @Override
     public void onGameLoad(boolean newGame) {
@@ -40,6 +40,7 @@ public class RenxPlugin extends BaseModPlugin {
             }
         }
 
+        Set<Integer[]> selectedColors = new HashSet<>();
         int index = 0;
         while (true) {
             FactionSpecAPI spec = Global.getSettings().getFactionSpec("renx_faction" + index);
@@ -54,6 +55,8 @@ public class RenxPlugin extends BaseModPlugin {
                     COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)]
             };
             if (color[0] + color[1] + color[2] <= 100) continue;
+            if (selectedColors.contains(new Integer[]{color[0], color[1], color[2]})) continue;
+            selectedColors.add(new Integer[]{color[0], color[1], color[2]});
             setColor(spec, color);
 
             if (newGame) {
@@ -244,7 +247,7 @@ public class RenxPlugin extends BaseModPlugin {
     }
 
     private static void setNexFactionValues(NexFactionConfig config, Random rng, FactionAPI faction) {
-        config.pirateFaction = rng.nextFloat() < 0.2f;
+        config.pirateFaction = rng.nextFloat() < 0.3f;
         config.hostileToAll = config.pirateFaction ? 2 : 0;
         setDiplomacyTraits(config, rng);
         config.freeMarket = config.diplomacyTraits.contains("anarchist");
