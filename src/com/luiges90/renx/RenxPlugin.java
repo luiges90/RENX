@@ -59,58 +59,8 @@ public class RenxPlugin extends BaseModPlugin {
             selectedColors.add(new Integer[]{color[0], color[1], color[2]});
             setColor(spec, color);
 
-            if (newGame) {
-                String name = spec.getId();
-                List<MarketAPI> markets = factionMarkets.get(faction.getId());
-
-                if (markets != null) {
-                    MarketAPI largestMarket;
-                    int size = 0;
-                    for (MarketAPI market : markets) {
-                        if (market.getSize() > size) {
-                            size = market.getSize();
-                            largestMarket = market;
-                            name = largestMarket.getName();
-                        }
-                    }
-
-                    char last = name.charAt(name.length() - 1);
-                    if (last == 'a') {
-                        name = name + "n";
-                    } else if (last == 'n') {
-                        name = name + "ese";
-                    } else {
-                        name = name + "an";
-                    }
-
-                    String name2 = Util.randomFrom(rng, POLITIES);
-                    setName(spec, name, name2);
-
-                    MemoryAPI memory = faction.getMemoryWithoutUpdate();
-                    memory.set("$renx_faction_name", name);
-                    memory.set("$renx_faction_name2", name2);
-                }
-            } else {
-                setName(spec, faction.getMemoryWithoutUpdate().getString("$renx_faction_name"), faction.getMemoryWithoutUpdate().getString("$renx_faction_name2"));
-            }
-
-            Integer[] nameWeight = new Integer[]{0, 0, 0, 0, 1, 1, 2, 3};
-            for (int i = 0; i < spec.getNameCategories().getItems().size(); ++i) {
-                spec.getNameCategories().setWeight(i, Util.randomFrom(rng, nameWeight));
-            }
-            for (int i = 0; i < spec.getShipNameSources().getItems().size(); ++i) {
-                spec.getShipNameSources().setWeight(i, Util.randomFrom(rng, nameWeight));
-            }
-            nameWeight = new Integer[]{0, 0, 1, 1, 2};
-            for (int i = 0; i < spec.getVoicePickerLow().getItems().size(); ++i) {
-                spec.getVoicePickerLow().setWeight(i, Util.randomFrom(rng, nameWeight));
-            }
-            for (int i = 0; i < spec.getVoicePickerMedium().getItems().size(); ++i) {
-                spec.getVoicePickerMedium().setWeight(i, Util.randomFrom(rng, nameWeight));
-            }
-            for (int i = 0; i < spec.getVoicePickerHigh().getItems().size(); ++i) {
-                spec.getVoicePickerHigh().setWeight(i, Util.randomFrom(rng, nameWeight));
-            }
+            setFactionName(newGame, spec, factionMarkets, faction, rng);
+            setNameAndVoices(spec, rng);
 
             try {
                 spec.getCustom().put("AICoreValueMult", rng.nextInt(4) * 0.5f + 0.5f);
@@ -142,15 +92,71 @@ public class RenxPlugin extends BaseModPlugin {
             index++;
         }
 
+        if (newGame) {
+            setInitialPirateRelations();
+        }
         setNextDiplomaticValues(index, rng);
 
         buffPirates();
 
-        if (newGame) {
-            setInitialPirateRelations();
-        }
-
         Global.getSector().addScript(new DiplomaticRelationScript());
+    }
+
+    private static void setNameAndVoices(FactionSpecAPI spec, Random rng) {
+        Integer[] nameWeight = new Integer[]{0, 0, 0, 0, 1, 1, 2, 3};
+        for (int i = 0; i < spec.getNameCategories().getItems().size(); ++i) {
+            spec.getNameCategories().setWeight(i, Util.randomFrom(rng, nameWeight));
+        }
+        for (int i = 0; i < spec.getShipNameSources().getItems().size(); ++i) {
+            spec.getShipNameSources().setWeight(i, Util.randomFrom(rng, nameWeight));
+        }
+        nameWeight = new Integer[]{0, 0, 1, 1, 2};
+        for (int i = 0; i < spec.getVoicePickerLow().getItems().size(); ++i) {
+            spec.getVoicePickerLow().setWeight(i, Util.randomFrom(rng, nameWeight));
+        }
+        for (int i = 0; i < spec.getVoicePickerMedium().getItems().size(); ++i) {
+            spec.getVoicePickerMedium().setWeight(i, Util.randomFrom(rng, nameWeight));
+        }
+        for (int i = 0; i < spec.getVoicePickerHigh().getItems().size(); ++i) {
+            spec.getVoicePickerHigh().setWeight(i, Util.randomFrom(rng, nameWeight));
+        }
+    }
+
+    private static void setFactionName(boolean newGame, FactionSpecAPI spec, Map<String, List<MarketAPI>> factionMarkets, FactionAPI faction, Random rng) {
+        if (newGame) {
+            String name = spec.getId();
+            List<MarketAPI> markets = factionMarkets.get(faction.getId());
+
+            if (markets != null) {
+                MarketAPI largestMarket;
+                int size = 0;
+                for (MarketAPI market : markets) {
+                    if (market.getSize() > size) {
+                        size = market.getSize();
+                        largestMarket = market;
+                        name = largestMarket.getName();
+                    }
+                }
+
+                char last = name.charAt(name.length() - 1);
+                if (last == 'a') {
+                    name = name + "n";
+                } else if (last == 'n') {
+                    name = name + "ese";
+                } else {
+                    name = name + "an";
+                }
+
+                String name2 = Util.randomFrom(rng, POLITIES);
+                setName(spec, name, name2);
+
+                MemoryAPI memory = faction.getMemoryWithoutUpdate();
+                memory.set("$renx_faction_name", name);
+                memory.set("$renx_faction_name2", name2);
+            }
+        } else {
+            setName(spec, faction.getMemoryWithoutUpdate().getString("$renx_faction_name"), faction.getMemoryWithoutUpdate().getString("$renx_faction_name2"));
+        }
     }
 
     private static void setInitialPirateRelations() {
@@ -167,7 +173,7 @@ public class RenxPlugin extends BaseModPlugin {
             for (FactionAPI f : allFactions) {
                 boolean otherPirate = NexConfig.getFactionConfig(f.getId()).pirateFaction;
 
-                if (thisPirate != otherPirate && faction.getRelationship(f.getId()) == 0) {
+                if (thisPirate != otherPirate) {
                     faction.setRelationship(f.getId(), -0.6f);
                 }
             }
