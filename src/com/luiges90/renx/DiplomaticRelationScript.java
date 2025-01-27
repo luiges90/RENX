@@ -49,11 +49,9 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
         List<FactionAPI> allAllFactions = Global.getSector().getAllFactions();
         List<FactionAPI> allFactions = new ArrayList<>();
         for (FactionAPI faction : allAllFactions) {
-            if (faction.isNeutralFaction() || !faction.isShowInIntelTab()) {
-                continue;
+            if (faction.isPlayerFaction() || faction.isShowInIntelTab()) {
+                allFactions.add(faction);
             }
-
-            allFactions.add(faction);
         }
 
         for (FactionAPI i : allFactions) {
@@ -62,14 +60,14 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
                     continue;
                 }
 
-                if (i.getRelationship(j.getId()) < -0.1f) {
+                if (i.getRelationship(j.getId()) < -0.25f) {
                     for (FactionAPI k : allFactions) {
                         if (k == i || k == j) {
                             continue;
                         }
 
-                        if (j.getRelationship(k.getId()) > 0.1f && random.nextFloat() < 0.25f) {
-                            float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId())) * 0.05f * (random.nextFloat() + 0.5f);
+                        if (j.getRelationship(k.getId()) > 0.25f && random.nextFloat() < 0.05f) {
+                            float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId()) - 0.5f) * 0.05f * (random.nextFloat() + 0.5f);
                             i.adjustRelationship(k.getId(), delta);
 
                             String logStr = "DiplomaticRelationScript: " + i.getDisplayName() + " - " + j.getDisplayName() + " rel: " + i.getRelationship(j.getId()) + "; " +

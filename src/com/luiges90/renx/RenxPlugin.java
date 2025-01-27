@@ -96,13 +96,16 @@ public class RenxPlugin extends BaseModPlugin {
         if (newGame) {
             setInitialPirateRelations();
         }
-        setNextDiplomaticValues(index, rng);
+        setNexDiplomaticValues(index, rng);
 
         buffPirates();
 
+        /*
         if (newGame) {
             addBasicStructures();
         }
+
+         */
 
         Global.getSector().addScript(new DiplomaticRelationScript());
     }
@@ -263,7 +266,7 @@ public class RenxPlugin extends BaseModPlugin {
         spec.getMusicMap().put("encounter_friendly", "music_pirates_encounter_friendly");
     }
 
-    private static void setNextDiplomaticValues(int index, Random rng) {
+    private static void setNexDiplomaticValues(int index, Random rng) {
         for (int i = 0; i < index; ++i) {
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
