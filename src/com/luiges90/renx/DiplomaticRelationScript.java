@@ -76,7 +76,7 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
                             Global.getLogger(DiplomaticRelationScript.class).info(logStr);
 
                             if (i.isPlayerFaction()) {
-                                CoreReputationPlugin.addAdjustmentMessage(delta, k, null, null, null, null, true, 0f, "Change caused by hostile relations with " + k.getDisplayName());
+                                CoreReputationPlugin.addAdjustmentMessage(delta, k, null, null, null, null, true, 0f, "Change caused by hostile relations with " + j.getDisplayName());
                                 Global.getSoundPlayer().playUISound("ui_rep_drop", 1f, 1f);
                             }
                             else if (k.isPlayerFaction()) {
