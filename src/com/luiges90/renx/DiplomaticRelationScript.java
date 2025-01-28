@@ -67,7 +67,7 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
                         }
 
                         if (j.getRelationship(k.getId()) > 0.25f && random.nextFloat() < 0.05f) {
-                            float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId()) - 0.5f) * 0.05f * (random.nextFloat() + 0.5f);
+                            float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId()) + 0.5f) * 0.05f * (random.nextFloat() + 0.5f);
                             i.adjustRelationship(k.getId(), delta);
 
                             String logStr = "DiplomaticRelationScript: " + i.getDisplayName() + " - " + j.getDisplayName() + " rel: " + i.getRelationship(j.getId()) + "; " +
@@ -75,9 +75,13 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
                                     i.getDisplayName() + " - " + k.getDisplayName() + " rel adjusted: " + delta;
                             Global.getLogger(DiplomaticRelationScript.class).info(logStr);
 
-                            if ("player".equals(i.getId()) || "player".equals(k.getId())) {
-                                CoreReputationPlugin.addAdjustmentMessage(delta, i, null, null, null, null, true, 0f, "Change caused by friendly relation with " + j.getDisplayName());
-                                Global.getSoundPlayer().playUISound("ui_rep_drop", 0.85f, 0.5f);
+                            if (i.isPlayerFaction()) {
+                                CoreReputationPlugin.addAdjustmentMessage(delta, k, null, null, null, null, true, 0f, "Change caused by hostile relations with " + k.getDisplayName());
+                                Global.getSoundPlayer().playUISound("ui_rep_drop", 1f, 1f);
+                            }
+                            else if (k.isPlayerFaction()) {
+                                CoreReputationPlugin.addAdjustmentMessage(delta, i, null, null, null, null, true, 0f, "Change caused by friendly relations with " + j.getDisplayName());
+                                Global.getSoundPlayer().playUISound("ui_rep_drop", 1f, 1f);
                             }
                         }
                     }
