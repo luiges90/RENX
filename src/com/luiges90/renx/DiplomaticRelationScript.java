@@ -66,22 +66,23 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
                             continue;
                         }
 
-                        if (j.getRelationship(k.getId()) > 0.25f && random.nextFloat() < 0.05f) {
-                            float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId()) + 0.5f) * 0.05f * (random.nextFloat() + 0.5f);
-                            i.adjustRelationship(k.getId(), delta);
+                        if (i.getRelationship(k.getId()) > -1) {
+                            if (j.getRelationship(k.getId()) > 0.25f && random.nextFloat() < 0.05f) {
+                                float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId()) + 0.5f) * 0.05f * (random.nextFloat() + 0.5f);
+                                i.adjustRelationship(k.getId(), delta);
 
-                            String logStr = "DiplomaticRelationScript: " + i.getDisplayName() + " - " + j.getDisplayName() + " rel: " + i.getRelationship(j.getId()) + "; " +
-                                    j.getDisplayName() + " - " + k.getDisplayName() + " rel: " + j.getRelationship(k.getId()) + "; " +
-                                    i.getDisplayName() + " - " + k.getDisplayName() + " rel adjusted: " + delta;
-                            Global.getLogger(DiplomaticRelationScript.class).info(logStr);
+                                String logStr = "DiplomaticRelationScript: " + i.getDisplayName() + " - " + j.getDisplayName() + " rel: " + i.getRelationship(j.getId()) + "; " +
+                                        j.getDisplayName() + " - " + k.getDisplayName() + " rel: " + j.getRelationship(k.getId()) + "; " +
+                                        i.getDisplayName() + " - " + k.getDisplayName() + " rel adjusted: " + delta;
+                                Global.getLogger(DiplomaticRelationScript.class).info(logStr);
 
-                            if (i.isPlayerFaction()) {
-                                CoreReputationPlugin.addAdjustmentMessage(delta, k, null, null, null, null, true, 0f, "Change caused by hostile relations with " + j.getDisplayName());
-                                Global.getSoundPlayer().playUISound("ui_rep_drop", 1f, 1f);
-                            }
-                            else if (k.isPlayerFaction()) {
-                                CoreReputationPlugin.addAdjustmentMessage(delta, i, null, null, null, null, true, 0f, "Change caused by friendly relations with " + j.getDisplayName());
-                                Global.getSoundPlayer().playUISound("ui_rep_drop", 1f, 1f);
+                                if (i.isPlayerFaction()) {
+                                    CoreReputationPlugin.addAdjustmentMessage(delta, k, null, null, null, null, true, 0f, "Change caused by hostile relations with " + j.getDisplayName());
+                                    Global.getSoundPlayer().playUISound("ui_rep_drop", 1f, 1f);
+                                } else if (k.isPlayerFaction()) {
+                                    CoreReputationPlugin.addAdjustmentMessage(delta, i, null, null, null, null, true, 0f, "Change caused by friendly relations with " + j.getDisplayName());
+                                    Global.getSoundPlayer().playUISound("ui_rep_drop", 1f, 1f);
+                                }
                             }
                         }
                     }
