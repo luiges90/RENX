@@ -1,6 +1,7 @@
 package com.luiges90.renx;
 
 import com.fs.starfarer.api.EveryFrameScript;
+import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -31,6 +32,8 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
 
     @Override
     public void advance(float amount) {
+        if (Global.getCurrentState() != GameState.CAMPAIGN) return;
+
         Object otsn = Global.getSector().getPersistentData().get(PERSISTENT_DATA_KEY_TIMESTAMP);
         if (otsn == null) {
             Global.getSector().getPersistentData().put("renx_diplomaticRelationScript_timestamp", Global.getSector().getClock().getDay());
