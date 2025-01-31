@@ -1,0 +1,67 @@
+{
+  "playableFaction": true,
+  "corvusCompatible": false,
+  "rebelFleetSuffix": "Rebel Fleet",
+  "directoryUseShortName": true,
+  "ngcTooltip": "This will be filled by a randomly generated faction by RENX once game starts.",
+  "marketSpawnWeight": 1,
+  "startRelationships": {},
+  "maxRelationships": {},
+  "diplomacyPositiveChance": {},
+  "diplomacyNegativeChance": {},
+  "morality": "neutral",
+  "alignments": {
+  },
+  "diplomacyTraits": [],
+  "freeMarket": false,
+  "colonyExpeditionChance": 1,
+  "colonyTargetValuator": "exerelin.campaign.colony.IndustrialColonyTargetValuator",
+  "specialForcesNamerClass": "exerelin.campaign.intel.specialforces.namer.PlanetNamer",
+  "defenceStations": [
+    {
+      "ids": [
+        "orbitalstation",
+        "battlestation",
+        "starfortress"
+      ]
+    },
+    {
+      "ids": [
+        "orbitalstation_mid",
+        "battlestation_mid",
+        "starfortress_mid"
+      ]
+    },
+    {
+      "ids": [
+        "orbitalstation_high",
+        "battlestation_high",
+        "starfortress_high"
+      ]
+    }
+  ],
+  "industrySeeds": [
+    {
+      "id": "orbitalworks",
+      "mult": 0.1
+    },
+    {
+      "id": "fuelprod",
+      "mult": 0.1
+    },
+    {
+      "id": "lightindustry",
+      "mult": 0.1
+    },
+    {
+      "id": "farming",
+      "mult": 1
+    }
+  ],
+  "bonusSeeds": [
+    {
+      "id": "nanoforge_corrupted",
+      "count": 1
+    }
+  ]
+}
