@@ -206,13 +206,13 @@ public class RenxPlugin extends BaseModPlugin {
                     if (!config.groundBattleSettings.containsKey("defenseMult")) {
                         config.groundBattleSettings.put("defenseMult", groundForceBuff);
                     } else {
-                        config.groundBattleSettings.put("defenseMult", (float) config.groundBattleSettings.get("defenseMult") * groundForceBuff);
+                        config.groundBattleSettings.put("defenseMult", (double) config.groundBattleSettings.get("defenseMult") * groundForceBuff);
                     }
 
                     if (!config.groundBattleSettings.containsKey("moraleDamageTakenMult")) {
                         config.groundBattleSettings.put("moraleDamageTakenMult", 1 / groundForceBuff);
                     } else {
-                        config.groundBattleSettings.put("moraleDamageTakenMult", (float) config.groundBattleSettings.get("defenseMult") * (1 / groundForceBuff));
+                        config.groundBattleSettings.put("moraleDamageTakenMult", (double) config.groundBattleSettings.get("defenseMult") * (1 / groundForceBuff));
                     }
                 }
             }
@@ -224,7 +224,7 @@ public class RenxPlugin extends BaseModPlugin {
 
                 if (isPirate) {
                     MarketAPI mutMarket = Global.getSector().getEconomy().getMarket(market.getId());
-                    mutMarket.getAccessibilityMod().modifyFlat("renx_pirate_access_buff", (float) Util.getDoubleSetting( "renx_pirate_access_buff", 0.5));
+                    mutMarket.getAccessibilityMod().modifyFlat("renx_pirate_access_buff", (float) Util.getDoubleSetting( "renx_pirate_market_accessibility", 0.5));
                 }
             }
         }
@@ -531,7 +531,7 @@ public class RenxPlugin extends BaseModPlugin {
                 "mjolnir", "multineedler"
         };
         for (String weapon : allWeaponList) {
-            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_any", 0.1f)) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_hull_any", 0.1f)) {
                 faction.addKnownWeapon(weapon, true);
             }
         }
@@ -576,7 +576,7 @@ public class RenxPlugin extends BaseModPlugin {
             }
         }
         for (String fighter : allFighterList) {
-            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_any", 0.1f)) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_hull_any", 0.1f)) {
                 faction.addKnownFighter(fighter, true);
             }
         }
@@ -638,7 +638,7 @@ public class RenxPlugin extends BaseModPlugin {
             }
         }
         for (String hull : allHullList) {
-            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_any", 0.1f)) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_hull_any", 0.1f)) {
                 faction.addKnownShip(hull, true);
             }
         }

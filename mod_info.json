@@ -4,7 +4,7 @@
   "author": "luiges90 (aka pwhk)",
   "utility": false,
   "version": { "major": 0, "minor": 0, "patch": 6 },
-  "description": "",
+  "description": "Generate new factions.",
   "gameVersion": "0.97a-RC11",
   "jars": [ "jars/renx.jar" ],
   "modPlugin": "com.luiges90.renx.RenxPlugin",
