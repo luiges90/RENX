@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FactionTemplateGenerator {
-    public static final int FACTION_COUNT = 8;
+    public static final int FACTION_COUNT = 12;
 
     public static void main(String[] args) {
         Util.deleteFileInDirectory("data/world/factions");

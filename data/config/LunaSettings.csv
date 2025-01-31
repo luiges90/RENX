@@ -1,0 +1,19 @@
+fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
+renx_faction_header,renx_faction_header,Header,Random Faction Settings,,,,,
+renx_faction_subheader,renx_faction_subheader,Text,"Settings for randomly generated factions. [NOTE: These settings apply to new games only.]",,,,,
+renx_faction_base_hull,renx_faction_base_hull,Double,0.9,,"Chance for a faction to have the hull, fighter, or weapon from the base list.",0.1,1,
+renx_faction_base_hull_tech,renx_faction_base_hull_tech,Double,0.8,,"Chance for a faction to have the hull, fighter, or weapon from their respective tech doctrine list (lowtech, midline, hightech, etc).",0,1,
+renx_faction_base_hull_any,renx_faction_base_hull_any,Double,0.1,,"Chance for a faction to have the hull, fighter, or weapon, regardless of its list.",0,1,
+renx_faction_pirate_chance,renx_faction_pirate_chance,Double,0.3,,"Chance for a faction to be a pirate faction.",0,1,
+renx_faction_force_variance,renx_faction_force_variance,Double,0.2,,"Variance of various capabilities for factions.",0,0.9,
+renx_faction_friendly_chance,renx_faction_friendly_chance,Double,0.2,,"Chance for a faction to be friendly with other factions.",0,1,
+renx_faction_hostile_chance,renx_faction_hostile_chance,Double,0.2,,"Chance for a faction to be hostile with other factions.",0,1,
+
+renx_pirate_header,renx_pirate_buff_header,Header,Pirate Settings,,,,,
+renx_pirate_ground_force_buff,renx_pirate_ground_force_buff,Double,0.5,,"Buff to ground force defensive strength and morale damage taken for pirate factions.",0,5,
+renx_pirate_market_accessibility,renx_pirate_market_accessibility,Double,0.5,,"Bonus accessibility of pirate markets. Since the accessibility malus due to faction hostility scales with absolute number of factions, pirate markets often have negative accessibility in RENX without this buff. As a result, pirate markets often have a dire lack of food (and other stuff) and hence stability, which leads to these markets to decivilize quickly.",0,1,
+
+renx_diprel_header,renx_diprel_header,Header,Diplomatic Relation loss due to being friendly to hostile factions,,,,,
+renx_diprel_threshold,renx_diprel_threshold,Double,0.25,,"Diplomatic relation threshold for diplomatic relations change.",0,1,
+renx_diprel_frequency,renx_diprel_frequency,Int,30,,"Frequency of diplomatic relations change. The higher this value the less frequent these events happen.",1,360,
+renx_diprel_amount,renx_diprel_amount,Int,5,,"Amount of diplomatic relations change, scaled with the relation values involved.",0,100,

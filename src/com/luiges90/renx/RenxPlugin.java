@@ -72,14 +72,14 @@ public class RenxPlugin extends BaseModPlugin {
 
             String[] hullTags = new String[]{"lowtech_bp", "midline_bp", "hightech_bp", "pirate_bp"};
             String hullTag = Util.randomFrom(rng, hullTags);
-            addHulls(faction, hullTag, rng);
-            addFighters(faction, hullTag, rng);
-            addWeapons(faction, hullTag, rng);
+            addHulls(newGame, faction, hullTag, rng);
+            addFighters(newGame, faction, hullTag, rng);
+            addWeapons(newGame, faction, hullTag, rng);
 
             setDoctrine(faction, rng, hullTag);
             NexFactionConfig config = NexConfig.getFactionConfig("renx_faction" + index);
 
-            setNexFactionValues(config, rng, faction);
+            setNexFactionValues(newGame, config, rng, faction);
 
             setDefenceStations(config, hullTag, rng);
             setBonusSeeds(config, rng);
@@ -104,7 +104,6 @@ public class RenxPlugin extends BaseModPlugin {
         if (newGame) {
             addBasicStructures();
         }
-
          */
 
         Global.getSector().addScript(new DiplomaticRelationScript());
@@ -197,22 +196,23 @@ public class RenxPlugin extends BaseModPlugin {
         for (FactionAPI faction: Global.getSector().getAllFactions()) {
             NexFactionConfig config = NexConfig.getFactionConfig(faction.getId());
             if (config.pirateFaction) {
+                double groundForceBuff = Util.getDoubleSetting("renx_pirate_ground_force_buff", 0.5f);
                 if (config.groundBattleSettings == null) {
                     config.groundBattleSettings = new HashMap<>();
-                    config.groundBattleSettings.put("defenseMult", 1.5f);
-                    config.groundBattleSettings.put("moraleDamageTakenMult", 0.75f);
+                    config.groundBattleSettings.put("defenseMult", 1 + groundForceBuff);
+                    config.groundBattleSettings.put("moraleDamageTakenMult", 1 / groundForceBuff);
                 }
                 else {
                     if (!config.groundBattleSettings.containsKey("defenseMult")) {
-                        config.groundBattleSettings.put("defenseMult", 1.5f);
+                        config.groundBattleSettings.put("defenseMult", groundForceBuff);
                     } else {
-                        config.groundBattleSettings.put("defenseMult", (float) config.groundBattleSettings.get("defenseMult") * 1.5f);
+                        config.groundBattleSettings.put("defenseMult", (float) config.groundBattleSettings.get("defenseMult") * groundForceBuff);
                     }
 
                     if (!config.groundBattleSettings.containsKey("moraleDamageTakenMult")) {
-                        config.groundBattleSettings.put("moraleDamageTakenMult", 0.75f);
+                        config.groundBattleSettings.put("moraleDamageTakenMult", 1 / groundForceBuff);
                     } else {
-                        config.groundBattleSettings.put("moraleDamageTakenMult", (float) config.groundBattleSettings.get("defenseMult") * 0.75f);
+                        config.groundBattleSettings.put("moraleDamageTakenMult", (float) config.groundBattleSettings.get("defenseMult") * (1 / groundForceBuff));
                     }
                 }
             }
@@ -224,7 +224,7 @@ public class RenxPlugin extends BaseModPlugin {
 
                 if (isPirate) {
                     MarketAPI mutMarket = Global.getSector().getEconomy().getMarket(market.getId());
-                    mutMarket.getAccessibilityMod().modifyFlat("renx_pirate_access_buff", 0.5f);
+                    mutMarket.getAccessibilityMod().modifyFlat("renx_pirate_access_buff", (float) Util.getDoubleSetting( "renx_pirate_access_buff", 0.5));
                 }
             }
         }
@@ -273,7 +273,9 @@ public class RenxPlugin extends BaseModPlugin {
             for (int j = 0; j < index; ++j) {
                 if (i == j) continue;
 
-                if (rng.nextFloat() < 0.2f) {
+                double r = rng.nextFloat();
+
+                if (r < Util.getPersistedDoubleSetting(true, "renx_faction_friendly_chance", 0.2f)) {
                     int degree = rng.nextInt(4);
                     float rel = degree * 0.2f + 0.1f;
                     config.startRelationships.put("renx_faction" + j, rel);
@@ -281,7 +283,8 @@ public class RenxPlugin extends BaseModPlugin {
                     config.minRelationships.put("renx_faction" + j, degree * 0.25f - 1f);
                     config.diplomacyPositiveChance.put("renx_faction" + j, rng.nextFloat() * 0.4f + 0.8f + degree * 0.2f);
                     config.diplomacyNegativeChance.put("renx_faction" + j, rng.nextFloat() * 0.4f + 0.8f - degree * 0.1f);
-                } else if (rng.nextFloat() < 0.25f) {
+                }
+                if (r > 1 - Util.getPersistedDoubleSetting(true, "renx_faction_hostile_chance", 0.2f)) {
                     int degree = rng.nextInt(4);
                     float rel = -degree * 0.2f - 0.1f;
                     config.startRelationships.put("renx_faction" + j, rel);
@@ -295,8 +298,8 @@ public class RenxPlugin extends BaseModPlugin {
         }
     }
 
-    private static void setNexFactionValues(NexFactionConfig config, Random rng, FactionAPI faction) {
-        config.pirateFaction = rng.nextFloat() < 0.3f;
+    private static void setNexFactionValues(boolean newGame, NexFactionConfig config, Random rng, FactionAPI faction) {
+        config.pirateFaction = rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_pirate_chance", 0.3f);
         config.hostileToAll = config.pirateFaction ? 2 : 0;
         setDiplomacyTraits(config, rng);
         config.freeMarket = config.diplomacyTraits.contains("anarchist");
@@ -305,18 +308,20 @@ public class RenxPlugin extends BaseModPlugin {
             setIllegalCommodities(faction, rng);
         }
 
-        config.groundBattleSettings = new HashMap<>();
-        config.groundBattleSettings.put("attackMult", rng.nextFloat() * 0.4f + 0.8f);
-        config.groundBattleSettings.put("defenseMult", rng.nextFloat() * 0.4f + 0.8f);
-        config.groundBattleSettings.put("moraleDamageTakenMult", rng.nextFloat() * 0.4f + 0.8f);
-        config.invasionFleetSizeMod = rng.nextFloat() * 0.4f + 0.8f;
-        config.responseFleetSizeMod = rng.nextFloat() * 0.4f + 0.8f;
-        config.invasionPointMult = rng.nextFloat() * 0.4f + 0.8f;
+        double variance = Util.getPersistedDoubleSetting(newGame, "renx_faction_force_variance", 0.9f);
 
-        config.colonyExpeditionChance = rng.nextFloat() * 0.4f + 0.8f;
-        config.specialForcesPointMult = rng.nextFloat() * 0.4f + 0.8f;
-        config.specialForcesSizeMult = rng.nextFloat() * 0.4f + 0.8f;
-        config.vengeanceFleetSizeMult = rng.nextFloat() * 0.4f + 0.8f;
+        config.groundBattleSettings = new HashMap<>();
+        config.groundBattleSettings.put("attackMult", rng.nextFloat() * (2 * variance) + (1 - variance));
+        config.groundBattleSettings.put("defenseMult", rng.nextFloat() * (2 * variance) + (1 - variance));
+        config.groundBattleSettings.put("moraleDamageTakenMult", rng.nextFloat() * (2 * variance) + (1 - variance));
+        config.invasionFleetSizeMod = (float) (rng.nextFloat() * (2 * variance) + (1 - variance));
+        config.responseFleetSizeMod = (float) (rng.nextFloat() * (2 * variance) + (1 - variance));
+        config.invasionPointMult = (float) (rng.nextFloat() * (2 * variance) + (1 - variance));
+
+        config.colonyExpeditionChance = (float) (rng.nextFloat() * (2 * variance) + (1 - variance));
+        config.specialForcesPointMult = (float) (rng.nextFloat() * (2 * variance) + (1 - variance));
+        config.specialForcesSizeMult = (float) (rng.nextFloat() * (2 * variance) + (1 - variance));
+        config.vengeanceFleetSizeMult = (float) (rng.nextFloat() * (2 * variance) + (1 - variance));
     }
 
     private static void setDefenceStations(NexFactionConfig config, String hullTag, Random rng) {
@@ -395,16 +400,16 @@ public class RenxPlugin extends BaseModPlugin {
     }
 
     private static void setIllegalCommodities(FactionAPI faction, Random rng) {
-        if (rng.nextFloat() < 0.9f) {
+        if (rng.nextFloat() < 0.99f) {
             faction.makeCommodityIllegal("ai_cores");
         }
-        if (rng.nextFloat() < 0.5f) {
+        if (rng.nextFloat() < 0.8f) {
             faction.makeCommodityIllegal("drugs");
         }
-        if (rng.nextFloat() < 0.5f) {
+        if (rng.nextFloat() < 0.8f) {
             faction.makeCommodityIllegal("organs");
         }
-        if (rng.nextFloat() < 0.3f) {
+        if (rng.nextFloat() < 0.6f) {
             faction.makeCommodityIllegal("hand_weapons");
         }
     }
@@ -436,20 +441,20 @@ public class RenxPlugin extends BaseModPlugin {
         doctrine.setCommanderSkillsShuffleProbability(rng.nextFloat());
     }
 
-    private static void addWeapons(FactionAPI faction, String hullTag, Random rng) {
+    private static void addWeapons(boolean newGame, FactionAPI faction, String hullTag, Random rng) {
         List<String> baseWeapons = Util.getAllWeaponsWithTag("base_bp");
         for (String baseWeapon : baseWeapons) {
             faction.addKnownWeapon(baseWeapon, true);
         }
         List<String> baseTechWeapons = Util.getAllWeaponsWithTag(hullTag);
         for (String baseWeapon : baseTechWeapons) {
-            if (rng.nextFloat() < 0.9f) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_hull", 0.9f)) {
                 faction.addKnownWeapon(baseWeapon, true);
             }
         }
         List<String> missileWeapons = Util.getAllWeaponsWithTag("missile_bp");
         for (String missileWeapon : missileWeapons) {
-            if (rng.nextFloat() < 0.9f) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_hull", 0.9f)) {
                 faction.addKnownWeapon(missileWeapon, true);
             }
         }
@@ -496,7 +501,7 @@ public class RenxPlugin extends BaseModPlugin {
                 break;
         }
         for (String weapon : weaponList) {
-            if (rng.nextFloat() < 0.8f) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_hull_tech", 0.8f)) {
                 faction.addKnownWeapon(weapon, true);
             }
         }
@@ -526,16 +531,16 @@ public class RenxPlugin extends BaseModPlugin {
                 "mjolnir", "multineedler"
         };
         for (String weapon : allWeaponList) {
-            if (rng.nextFloat() < 0.1f) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_any", 0.1f)) {
                 faction.addKnownWeapon(weapon, true);
             }
         }
     }
 
-    private static void addFighters(FactionAPI faction, String hullTag, Random rng) {
+    private static void addFighters(boolean newGame, FactionAPI faction, String hullTag, Random rng) {
         List<String> baseFighters = Util.getAllFightersWithTag(hullTag);
         for (String baseFighter : baseFighters) {
-            if (rng.nextFloat() < 0.9f) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_hull", 0.9f)) {
                 faction.addKnownFighter(baseFighter, true);
             }
         }
@@ -566,25 +571,25 @@ public class RenxPlugin extends BaseModPlugin {
                 "broadsword_wing", "dagger_wing", "trident_wing", "wasp_wing", "xyphos_wing", "claw_wing", "trident_wing", "cobra_wing", "longbow_wing"
         };
         for (String fighter : fighterList) {
-            if (rng.nextFloat() < 0.8f) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_hull_tech", 0.8f)) {
                 faction.addKnownFighter(fighter, true);
             }
         }
         for (String fighter : allFighterList) {
-            if (rng.nextFloat() < 0.1f) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_any", 0.1f)) {
                 faction.addKnownFighter(fighter, true);
             }
         }
     }
 
-    private static void addHulls(FactionAPI faction, String hullTag, Random rng) {
+    private static void addHulls(boolean newGame, FactionAPI faction, String hullTag, Random rng) {
         List<String> baseHulls = Util.getAllBaseHullsWithTag("base_bp");
         for (String baseHull : baseHulls) {
             faction.addKnownShip(baseHull, true);
         }
         List<String> baseTechHulls = Util.getAllBaseHullsWithTag(hullTag);
         for (String baseHull : baseTechHulls) {
-            if (rng.nextFloat() < 0.9f) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_hull", 0.9f)) {
                 faction.addKnownShip(baseHull, true);
             }
         }
@@ -628,12 +633,12 @@ public class RenxPlugin extends BaseModPlugin {
                 "manticore_luddic_path", "venture_pather", "prometheus2"
         };
         for (String hull : hullList) {
-            if (rng.nextFloat() < 0.8f) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_hull_tech", 0.8f)) {
                 faction.addKnownShip(hull, true);
             }
         }
         for (String hull : allHullList) {
-            if (rng.nextFloat() < 0.05f) {
+            if (rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_base_any", 0.1f)) {
                 faction.addKnownShip(hull, true);
             }
         }

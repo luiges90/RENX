@@ -17,6 +17,26 @@
         "minor":11,
         "patch":"2x"
       }
+    },
+    {
+      "id": "lw_lazylib",
+      "name": "LazyLib",
+      "optional": true,
+      "version":{
+        "major":2,
+        "minor":4,
+        "patch":0
+      }
+    },
+    {
+      "id": "lunalib",
+      "name": "LunaLib",
+      "optional": true,
+      "version":{
+        "major":1,
+        "minor":8,
+        "patch":6
+      }
     }
   ]
 }

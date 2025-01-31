@@ -46,7 +46,7 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
 
         Global.getSector().getPersistentData().put("renx_diplomaticRelationScript_timestamp", Global.getSector().getClock().getDay());
 
-        if (random.nextFloat() > 1 / 30f) return;
+        if (random.nextFloat() > 1f / Util.getIntSetting("renx_diprel_frequency", 30)) return;
 
         List<FactionAPI> allAllFactions = Global.getSector().getAllFactions();
         List<FactionAPI> allFactions = new ArrayList<>();
@@ -56,21 +56,22 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
             }
         }
 
+        float threshold = (float) Util.getDoubleSetting("renx_diprel_threshold", 0.25);
         for (FactionAPI i : allFactions) {
             for (FactionAPI j : allFactions) {
                 if (i == j) {
                     continue;
                 }
 
-                if (i.getRelationship(j.getId()) < -0.25f) {
+                if (i.getRelationship(j.getId()) < -threshold) {
                     for (FactionAPI k : allFactions) {
                         if (k == i || k == j) {
                             continue;
                         }
 
                         if (i.getRelationship(k.getId()) > -1) {
-                            if (j.getRelationship(k.getId()) > 0.25f && random.nextFloat() < 0.05f) {
-                                float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId()) + 0.5f) * 0.05f * (random.nextFloat() + 0.5f);
+                            if (j.getRelationship(k.getId()) > threshold && random.nextFloat() < 0.05f) {
+                                float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId()) + threshold * 2) * (Util.getIntSetting("renx_diprel_amount", 5) / 100f) * (random.nextFloat() + 0.5f);
                                 i.adjustRelationship(k.getId(), delta);
 
                                 String logStr = "DiplomaticRelationScript: " + i.getDisplayName() + " - " + j.getDisplayName() + " rel: " + i.getRelationship(j.getId()) + "; " +
