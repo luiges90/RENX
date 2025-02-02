@@ -72,6 +72,7 @@ public class DiplomaticRelationScript extends BaseCampaignEventListener implemen
                         if (i.getRelationship(k.getId()) > -1) {
                             if (j.getRelationship(k.getId()) > threshold && random.nextFloat() < 0.05f) {
                                 float delta = (i.getRelationship(j.getId()) - j.getRelationship(k.getId()) + threshold * 2) * (Util.getIntSetting("renx_diprel_amount", 5) / 100f) * (random.nextFloat() + 0.5f);
+                                delta = Math.max(delta, -1 - i.getRelationship(k.getId()));
                                 i.adjustRelationship(k.getId(), delta);
 
                                 String logStr = "DiplomaticRelationScript: " + i.getDisplayName() + " - " + j.getDisplayName() + " rel: " + i.getRelationship(j.getId()) + "; " +
