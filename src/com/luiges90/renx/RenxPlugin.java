@@ -646,7 +646,7 @@ public class RenxPlugin extends BaseModPlugin {
 
     private static void setColor(FactionSpecAPI spec, int[] color) {
         spec.setColor(new Color(color[0], color[1], color[2]));
-        spec.setBaseUIColor(new Color(color[0], color[1], color[2]).darker().darker());
+        spec.setBaseUIColor(new Color(color[0], color[1], color[2]).darker());
         spec.setBrightUIColor(new Color(color[0], color[1], color[2]).brighter());
         spec.setDarkUIColor(new Color(color[0], color[1], color[2]).darker().darker());
         spec.setGridUIColor(new Color(color[0], color[1], color[2]).darker().darker());
