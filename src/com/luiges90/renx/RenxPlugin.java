@@ -55,7 +55,7 @@ public class RenxPlugin extends BaseModPlugin {
                     COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)],
                     COLOR_VALUES[rng.nextInt(COLOR_VALUES.length)]
             };
-            if (color[0] + color[1] + color[2] <= 100) continue;
+            if (color[0] + color[1] + color[2] <= 128) continue;
             if (selectedColors.contains(new Integer[]{color[0], color[1], color[2]})) continue;
             selectedColors.add(new Integer[]{color[0], color[1], color[2]});
             setColor(spec, color);
