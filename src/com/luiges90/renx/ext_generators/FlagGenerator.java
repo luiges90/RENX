@@ -24,7 +24,9 @@ public class FlagGenerator {
             for (int j : COLOR_VALUES) {
                 for (int k : COLOR_VALUES) {
                     if (i + j + k <= 128) continue;
-                    generateImage(i, j, k);}
+                    generateImage(i, j, k);
+                    colorList.add(String.format("%02X%02X%02X", i, j, k));
+                }
             }
         }
 
