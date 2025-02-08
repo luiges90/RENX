@@ -299,7 +299,7 @@ public class RenxPlugin extends BaseModPlugin {
     }
 
     private static void setNexFactionValues(boolean newGame, NexFactionConfig config, Random rng, FactionAPI faction) {
-        config.pirateFaction = rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_pirate_chance", 0.3f);
+        config.pirateFaction = rng.nextFloat() < Util.getPersistedDoubleSetting(newGame, "renx_faction_pirate_chance", 0.25f);
         config.hostileToAll = config.pirateFaction ? 2 : 0;
         setDiplomacyTraits(config, rng);
         config.freeMarket = config.diplomacyTraits.contains("anarchist");
@@ -308,7 +308,7 @@ public class RenxPlugin extends BaseModPlugin {
             setIllegalCommodities(faction, rng);
         }
 
-        double variance = Util.getPersistedDoubleSetting(newGame, "renx_faction_force_variance", 0.9f);
+        double variance = Util.getPersistedDoubleSetting(newGame, "renx_faction_force_variance", 0.1f);
 
         config.groundBattleSettings = new HashMap<>();
         config.groundBattleSettings.put("attackMult", rng.nextFloat() * (2 * variance) + (1 - variance));
