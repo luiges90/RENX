@@ -17,3 +17,6 @@ renx_diprel_header,renx_diprel_header,Header,Diplomatic Relation loss due to bei
 renx_diprel_threshold,"Diplomatic relation threshold for diplomatic relations change.",Double,0.25,,,0,1,
 renx_diprel_frequency,"Frequency of diplomatic relations change.",Int,30,,"The higher this value the less frequent these events happen.",1,360,
 renx_diprel_amount,"Amount of diplomatic relations change",Int,5,,"Scaled with the relation values involved.",0,100,
+
+renx_other,renx_other,Header,Other Settings,,,,,
+renx_relocate_player_at_start,"Randomly place player in the middle of nowhere at start.",Boolean,True,,"If enabled, the player will be placed in a random location in the system, instead of the usual starting location. (Note: this is to prevent occasions where player may be spawned on top of a hostile planet. Future updates will improve this.)",,,

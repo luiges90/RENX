@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.NexConfig;
 import exerelin.utilities.NexFactionConfig;
@@ -106,7 +107,31 @@ public class RenxPlugin extends BaseModPlugin {
         }
          */
 
+        if (newGame && Util.getBoolSetting("renx_relocate_player_at_start", true)) {
+            sendPlayerFleetRandomly(rng);
+        }
+
         Global.getSector().addScript(new DiplomaticRelationScript());
+    }
+
+    private static void sendPlayerFleetRandomly(Random rng) {
+        // Move player to an independent market to prevent player spawning on top of a hostile market
+        if (Misc.getCommissionFaction() != null) {
+            return;
+        }
+
+        List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+        for (MarketAPI market : markets) {
+            if ("player".equals(market.getFactionId())) {
+                return;
+            }
+        }
+        for (MarketAPI market : markets) {
+            if ("independent".equals(market.getFactionId())) {
+                Global.getSector().getPlayerFleet().setLocation(rng.nextFloat() * 10000 - 5000, rng.nextFloat() * 10000 - 5000);
+                break;
+            }
+        }
     }
 
     private static void setNameAndVoices(FactionSpecAPI spec, Random rng) {

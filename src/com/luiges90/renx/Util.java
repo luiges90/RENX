@@ -16,6 +16,15 @@ import java.util.List;
 import java.util.Random;
 
 public class Util {
+    public static boolean getBoolSetting(String name, boolean defaultValue) {
+        boolean result = defaultValue;
+        if (Global.getSettings().getModManager().isModEnabled("lunalib"))
+        {
+            result = LunaSettings.getBoolean("renx", name);
+        }
+        return result;
+    }
+
     public static int getIntSetting(String name, int defaultValue) {
         int result = defaultValue;
         if (Global.getSettings().getModManager().isModEnabled("lunalib"))
